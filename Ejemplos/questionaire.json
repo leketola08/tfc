@@ -1,16 +1,15 @@
 {
-    "id": 1,
     "title": "Cuestionario de prueba 1",
     "description": "Cuestionario para probar mostrar la estructura esperada",
     "questions": [
         {
             "text": "Pregunta 1",
-            "type": "multiple-choice",
+            "type": "OM",
             "answers": [
                 "Resp1", "Resp2", "Resp3"
             ],
-            "isOption": true,
             "sectionType": "Resp3"
         }
-    ]
+    ],
+    "creationDate": "28/03/2025"
 }
