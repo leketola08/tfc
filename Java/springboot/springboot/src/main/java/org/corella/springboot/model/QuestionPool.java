@@ -7,22 +7,20 @@ import lombok.NoArgsConstructor;
 import org.bson.types.ObjectId;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
-import org.springframework.data.mongodb.core.mapping.DocumentReference;
 
 import java.util.List;
 
-@Document("questionnaire")
+@Document("questionPool")
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class Questionnaire {
+public class QuestionPool {
     @Id
     private ObjectId id;
     private String title;
     private String description;
     private List<Question> questions;
     private String creationDate;
-
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private List<String> sections;
 }

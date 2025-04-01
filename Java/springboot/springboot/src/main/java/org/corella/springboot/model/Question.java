@@ -16,7 +16,7 @@ import java.util.List;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@Document("cuestion")
+@Document("question")
 public class Question {
     @Id
     private ObjectId id;
