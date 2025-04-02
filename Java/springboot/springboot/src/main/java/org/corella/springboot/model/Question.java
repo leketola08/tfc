@@ -28,6 +28,7 @@ public class Question {
     private QuestionType type;
     private List<String> answers;
 
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     @JsonProperty("sectionType")
     private String sectionType;
 
