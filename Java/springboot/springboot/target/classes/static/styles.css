@@ -1,0 +1,22 @@
+body {
+    background-color: #ecf0f1;
+    padding-top: 60px;
+}
+
+td,th {
+    vertical-align: middle;
+}
+
+nav .nav-title {
+    color: #D4AF37;
+    font-weight: bold;
+    text-decoration: none;
+    padding: 10px 15px;
+    transition: color 0.3s ease-in-out;
+}
+
+
+
+nav .nav-title:hover {
+    color: #E1C16E;
+}

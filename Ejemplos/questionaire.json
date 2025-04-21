@@ -1,0 +1,23 @@
+{
+  "title": "Cuestionario de prueba 1",
+  "description": "Cuestionario para probar mostrar la estructura esperada",
+  "questions": [
+    {
+      "text": "Pregunta 1",
+      "type": "MO",
+      "answers": ["Resp1", "Resp2", "Resp3"],
+      "correctAnswer": "Resp3"
+    },
+    {
+      "text": "¿Cual es la diferencia entre el pero y la pera?",
+      "type": "MO",
+      "answers": [
+        "La última letra",
+        "Uno es una conjuncion y otra una fruta",
+        "Uno es azul y otro marrón"
+      ],
+      "correctAnswer": "Uno es una conjuncion y otra una fruta"
+    }
+  ],
+  "creationDate": "28/03/2025"
+}

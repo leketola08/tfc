@@ -1,0 +1,25 @@
+Given the following questionnaire:
+
+{questionnaire}
+
+Please extract the following properties and output them in a JSON structure example:
+
+{structure}
+
+Follow these rules for extraction:
+
+- Title: If a clear title is present, use it. Otherwise, default to 'Cuestionario-{datetimetoday}'.
+- Description: Create a description that is longer than the title and provides more context about the questionnaire.
+- Questions: For each question found in the extract:
+    - text: Extract only the question text.
+    - type: Determine the question type based on the format of the question and answers:
+        - "MO" for multiple choice with no specific order for correct answers.
+        - "OR" for ordered multiple choice where the correct answer has a specific order (e.g., "a,b,c").
+        - "BOOL" for true/false or yes/no questions.
+        - "LA" for open-ended long answer questions.
+        - "SA" for open-ended short answer questions.
+    - answers: Extract all the answer options, removing any ordering markers (e.g., "a)", "1.").
+    - correctAnswer: Identify and extract the correct answer. For "MO", "OR", and "BOOL", if a correct answer isn't explicitly marked (e.g., with "-> a)"), you might need to infer or set it to null. For "LA" and "SA", this field is not applicable.
+- creationDate: Use the current date: {datetoday}.
+
+Ensure the output is a valid JSON string.
