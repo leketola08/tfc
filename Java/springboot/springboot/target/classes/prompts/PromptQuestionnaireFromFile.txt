@@ -15,7 +15,7 @@ Sigue estas reglas para la generación de cada pregunta:
 contexto proporcionado. No repitas la misma pregunta. Debes diferenciar que preguntas son de tipo ejemplo o teóricos. Si es un ejemplo el texto debe empezar por ej:
 - Tipo: Determina el tipo de pregunta más apropiado:
     - "MO" para preguntas de opción múltiple sin un orden específico
-    - "OR" para preguntas de opción mútiple con un orden específico (ej., "a,b,c").
+    - "OR" para preguntas de opción mútiple con un orden específico como ordenar los pasos de un proceso por ejemplo
     - "BOOL" para preguntas de verdadero/falso o si/no
     - "LA" para preguntas abiertas largas
     - "SA" para preguntas abiertas cortas
@@ -25,6 +25,6 @@ contexto proporcionado. No repitas la misma pregunta. Debes diferenciar que preg
 "BOOL" generada para respuestas de verdadero/falso solo tiene 2 opciones. Para "LA" y "SA", la lista de respuestas estará vacía.
 - Respuesta correcta: Para "MO", "OR", y "BOOL", identifica y proporciona la respuesta correcta basada en el
 contexto. Si la respuesta no es directamente obvia, indica la respuesta más probable o deja el campo como `null` si no
-se puede determinar con certeza. Para "LA" y "SA", este campo será `null`.
+se puede determinar con certeza. Las respuestas abiertas solo tienen una respuesta correcta o NULL
 Marca todo en MAYUSCULAS si no encuentras una respuesta clara
 Asegúrate de que la salida sea un JSON String válido.

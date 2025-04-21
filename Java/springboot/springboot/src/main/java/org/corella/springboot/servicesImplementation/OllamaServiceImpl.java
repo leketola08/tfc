@@ -11,10 +11,7 @@ import org.springframework.ai.document.Document;
 import org.springframework.ai.ollama.OllamaChatModel;
 import org.springframework.ai.ollama.api.OllamaApi;
 import org.springframework.ai.ollama.api.OllamaOptions;
-import org.springframework.ai.transformer.splitter.TextSplitter;
-import org.springframework.ai.transformer.splitter.TokenTextSplitter;
 import org.springframework.ai.vectorstore.SimpleVectorStore;
-import org.springframework.ai.vectorstore.VectorStore;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
@@ -27,7 +24,6 @@ import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -45,7 +41,7 @@ public class OllamaServiceImpl {
     private OllamaOptions options = OllamaOptions.builder()
             .model(MODEL)
             .format("json")
-            .temperature(0.3)
+            .temperature(0.0)
             .build();
 
     private OllamaChatModel chatModel = OllamaChatModel.builder().
@@ -55,7 +51,7 @@ public class OllamaServiceImpl {
 
     private OllamaOptions optionsForText = OllamaOptions.builder()
             .model(MODEL)
-            .temperature(0.5)
+            .temperature(0.8)
             .build();
 
     private OllamaChatModel chatModelForText = OllamaChatModel.builder().
@@ -69,7 +65,10 @@ public class OllamaServiceImpl {
     @Value("classpath:/prompts/PromptQuestionnaireFromFile.txt")
     private Resource promptQuestionnaireFromFile;
 
-    public String getOllamaResponseQuestionnaireText(String questionnaire) {
+    @Value("classpath:/prompts/PromptQuestionnaireQuestionsFromFile.txt")
+    private Resource promptQuestionnaireQuestionsFromFile;
+
+    public String getQuestionnaireFromText(String questionnaire) {
         Map<String, Object> promptParameters = new HashMap<>();
         promptParameters.put("datetoday", LocalDate.now().toString());
         promptParameters.put("questionnaire", questionnaire);
@@ -130,6 +129,42 @@ public class OllamaServiceImpl {
         ChatResponse response = chatModel.call(prompt);
         String answer = response.getResult().getOutput().getText();
         return answer;
+    }
+
+    public String getQuestionnaireQuestionsFromText(Resource resource, int questionNum) {
+        embeddingService.embedAndStore(resource);
+        SimpleVectorStore vectorStore = embeddingService.getVectorStore();
+        List<Document> similarDocuments = vectorStore.similaritySearch("Contenido del tema sin ejemplos");
+        StringBuilder context = new StringBuilder();
+        for (Document document : similarDocuments) {
+            context.append(document.getFormattedContent()).append("\n");
+        }
+        Map<String, Object> promptParameters = new HashMap<>();
+        promptParameters.put("datetoday", LocalDate.now().toString());
+        promptParameters.put("numquestions", questionNum);
+        promptParameters.put("datetimetoday", LocalDateTime.now().toString());
+        promptParameters.put("structure", jsonStructure().toString(2));
+        promptParameters.put("context", context.toString());
+
+        String templateString;
+        try (InputStream inputStream = promptQuestionnaireQuestionsFromFile.getInputStream();
+             BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream, StandardCharsets.UTF_8))) {
+            StringBuilder stringBuilder = new StringBuilder();
+            String line;
+            while ((line = reader.readLine()) != null) {
+                stringBuilder.append(line).append("\n");
+            }
+            templateString = stringBuilder.toString();
+        } catch (IOException e) {
+            throw new RuntimeException("Error reading prompt template file.", e);
+        }
+
+        PromptTemplate promptTemplate = new PromptTemplate(templateString);
+        Prompt prompt = promptTemplate.create(promptParameters);
+        ChatResponse response = chatModelForText.call(prompt);
+        String answer = response.getResult().getOutput().getText();
+        System.out.println("Preguntas:\n" + answer);
+        return getQuestionnaireFromText(answer);
     }
 
     /**

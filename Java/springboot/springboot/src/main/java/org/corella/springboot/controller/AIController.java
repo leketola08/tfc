@@ -15,10 +15,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.util.List;
 
 @Controller
 public class AIController {
@@ -42,7 +39,7 @@ public class AIController {
 
     @RequestMapping("/ai/questionnaireText/load")
     public String questionnaireTextLoad(@RequestParam String prompt) {
-        System.out.println(ollamaService.getOllamaResponseQuestionnaireText(prompt));
+        System.out.println(ollamaService.getQuestionnaireFromText(prompt));
         return "redirect:/";
     }
 
@@ -66,7 +63,7 @@ public class AIController {
         try {
             ByteArrayResource resource = new ByteArrayResource(file.getBytes());
 
-            String questionnaireJSON = ollamaService.getQuestionnaireFromText(resource, 10);
+            String questionnaireJSON = ollamaService.getQuestionnaireQuestionsFromText(resource, 10);
             ObjectMapper objectMapper = new ObjectMapper();
             System.out.println(questionnaireJSON);
             Questionnaire questionnaire = objectMapper.readValue(questionnaireJSON, Questionnaire.class);
