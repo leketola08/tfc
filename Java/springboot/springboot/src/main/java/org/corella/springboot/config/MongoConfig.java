@@ -1,11 +1,13 @@
 package org.corella.springboot.config;
 
-import org.corella.springboot.model.enums.QuestionTypeConverter;
+import org.corella.springboot.model.enums.QuestionTypeReadConverter;
+import org.corella.springboot.model.enums.QuestionTypeWriteConverter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.mongodb.core.convert.MongoCustomConversions;
 
 import java.util.Arrays;
+import java.util.List;
 
 /**
  * Esta clase es llamada de forma automática por el configurador automático de
@@ -17,8 +19,9 @@ import java.util.Arrays;
 public class MongoConfig {
     @Bean
     public MongoCustomConversions mongoCustomConversions() {
-        return new MongoCustomConversions(
-                Arrays.asList(new QuestionTypeConverter())
-        );
+        return new MongoCustomConversions(List.of(
+                new QuestionTypeReadConverter(),
+                new QuestionTypeWriteConverter()
+        ));
     }
 }

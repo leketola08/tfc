@@ -9,10 +9,10 @@ import lombok.RequiredArgsConstructor;
 @Getter
 @RequiredArgsConstructor
 public enum QuestionType {
-    MULTIPLEOPTION("OM", "Opción Múltiple"),
+    MULTIPLEOPTION("MO", "Opción Múltiple"),
     BOOLEAN("BOOL", "Verdadero/Falso"),
-    LONGANSWER("RL", "Respuesta Larga"),
-    SHORTANSWER("RC", "Respuesta Corta"),
+    LONGANSWER("LA", "Respuesta Larga"),
+    SHORTANSWER("SA", "Respuesta Corta"),
     ORDER("OR", "Ordenación");
 
     @JsonProperty("code")
@@ -24,6 +24,7 @@ public enum QuestionType {
         if (code == null) {
             return null;
         }
+
         for (QuestionType type : values()) {
             if (type.code.equalsIgnoreCase(code)) {
                 return type;

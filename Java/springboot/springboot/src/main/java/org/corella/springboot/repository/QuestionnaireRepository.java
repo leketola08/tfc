@@ -14,5 +14,4 @@ public interface QuestionnaireRepository extends MongoRepository<Questionnaire, 
     Questionnaire findItemByTitle(String title);
 
     Optional<Questionnaire> findById(ObjectId id);
-    public long count();
 }

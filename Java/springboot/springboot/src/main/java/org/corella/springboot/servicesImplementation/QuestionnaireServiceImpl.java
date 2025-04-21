@@ -30,6 +30,4 @@ public class QuestionnaireServiceImpl implements QuestionnaireService {
         if(questionnaire != null) return questionnaireRepository.save(questionnaire);
         else return new Questionnaire();
     }
-
-
 }
