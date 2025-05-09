@@ -12,8 +12,7 @@ public enum QuestionType {
     MULTIPLEOPTION("MO", "Opción Múltiple"),
     BOOLEAN("BOOL", "Verdadero/Falso"),
     LONGANSWER("LA", "Respuesta Larga"),
-    SHORTANSWER("SA", "Respuesta Corta"),
-    ORDER("OR", "Ordenación");
+    SHORTANSWER("SA", "Respuesta Corta");
 
     @JsonProperty("code")
     private final String code;

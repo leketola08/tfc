@@ -29,19 +29,21 @@
                     <a class="nav-link" th:href="@{/}">Inicio</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" th:href="@{/questionnaires}">Tus Cuestionarios</a>
+                    <a class="nav-link" th:href="@{/questionpools}">Tus Bancos de Preguntas</a>
                 </li>
                 <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"
                        data-bs-toggle="dropdown">Crear</a>
                     <ul class="dropdown-menu dropdown-menu-dark">
                         <li>
-                            <a class="dropdown-item" th:href="@{/questionnaires/add}">Crear cuestionario</a>
+                            <a class="dropdown-item" th:href="@{/questionpool/add}">Crear banco de preguntas</a>
                         </li>
                         <li>
-                            <a class="dropdown-item" th:href="@{/ai/questionnaireText}">Crear cuestionario desde banco de preguntas</a>
+                            <a class="dropdown-item" th:href="@{/ai/questionpooltext}">Crear cuestionario desde banco de preguntas</a>
                         </li>
-
+                        <li>
+                            <a class="dropdown-item" th:href="@{/ai/pdf}">Crear cuestionario desde pdf</a>
+                        </li>
                     </ul>
                 </li>
             </ul>

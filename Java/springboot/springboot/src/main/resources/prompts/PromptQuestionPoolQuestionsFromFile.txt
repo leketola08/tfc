@@ -11,8 +11,7 @@ Sigue estas reglas para la generación de cada pregunta:
 - Texto de la pregunta: Formula una pregunta clara y concisa en español que se pueda responder basándose en el
 contexto proporcionado sin utilizar ejemplos o tareas. No repitas la misma pregunta.
 - Tipo: Determina el tipo de pregunta más apropiado:
-    - Preguntas de opción múltiple sin un orden específico, (solamente el 70% de las preguntas pueden ser de este tipo)
-    - Preguntas de opción múltiple con un orden específico como ordenar los pasos de un proceso por ejemplo
+    - Preguntas de opción múltiple sin un orden específico con solamente una respuesta correcta
     - Preguntas de verdadero/falso o si/no
     - Preguntas abiertas largas
     - Preguntas abiertas cortas

@@ -1,6 +1,7 @@
 package org.corella.springboot.servicesImplementation;
 
 import org.corella.springboot.services.EmbeddingService;
+import org.corella.springboot.services.OllamaService;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.ai.chat.messages.UserMessage;
@@ -29,7 +30,7 @@ import java.util.List;
 import java.util.Map;
 
 @Service
-public class OllamaServiceImpl {
+public class OllamaServiceImpl implements OllamaService {
     private static final String OLLAMA_URL = "http://localhost:11434";
     private static final String MODEL = "gemma3";
 
@@ -59,25 +60,25 @@ public class OllamaServiceImpl {
             .defaultOptions(optionsForText)
             .build();
 
-    @Value("classpath:/prompts/PromptQuestionnaireFromText.txt")
-    private Resource promptQuestionnaireFromText;
+    @Value("classpath:/prompts/PromptQuestionPoolFromText.txt")
+    private Resource promptQuestionPoolFromText;
 
-    @Value("classpath:/prompts/PromptQuestionnaireFromFile.txt")
-    private Resource promptQuestionnaireFromFile;
+    @Value("classpath:/prompts/PromptQuestionPoolFromFile.txt")
+    private Resource promptQuestionPoolFromFile;
 
-    @Value("classpath:/prompts/PromptQuestionnaireQuestionsFromFile.txt")
-    private Resource promptQuestionnaireQuestionsFromFile;
+    @Value("classpath:/prompts/PromptQuestionPoolQuestionsFromFile.txt")
+    private Resource promptQuestionPoolQuestionsFromFile;
 
-    public String getQuestionnaireFromText(String questionnaire) {
+    public String getQuestionPoolFromText(String questionPool) {
         Map<String, Object> promptParameters = new HashMap<>();
         promptParameters.put("datetoday", LocalDate.now().toString());
-        promptParameters.put("questionnaire", questionnaire);
+        promptParameters.put("questionPool", questionPool);
         promptParameters.put("datetimetoday", LocalDateTime.now().toString());
 
         promptParameters.put("structure", jsonStructure().toString(2));
 
         String templateString;
-        try (InputStream inputStream = promptQuestionnaireFromText.getInputStream();
+        try (InputStream inputStream = promptQuestionPoolFromText.getInputStream();
              BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream, StandardCharsets.UTF_8))) {
             StringBuilder stringBuilder = new StringBuilder();
             String line;
@@ -96,7 +97,7 @@ public class OllamaServiceImpl {
     }
 
 
-    public String getQuestionnaireFromText(Resource resource, int questionNum) {
+    public String getQuestionPoolFromText(Resource resource, int questionNum) {
         embeddingService.embedAndStore(resource);
         SimpleVectorStore vectorStore = embeddingService.getVectorStore();
         List<Document> similarDocuments = vectorStore.similaritySearch("Contenido del tema sin ejemplos");
@@ -112,7 +113,7 @@ public class OllamaServiceImpl {
         promptParameters.put("context", context.toString());
 
         String templateString;
-        try (InputStream inputStream = promptQuestionnaireFromFile.getInputStream();
+        try (InputStream inputStream = promptQuestionPoolFromFile.getInputStream();
              BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream, StandardCharsets.UTF_8))) {
             StringBuilder stringBuilder = new StringBuilder();
             String line;
@@ -131,7 +132,7 @@ public class OllamaServiceImpl {
         return answer;
     }
 
-    public String getQuestionnaireQuestionsFromText(Resource resource, int questionNum) {
+    public String getQuestionPoolFromResource(Resource resource, int questionNum) {
         embeddingService.embedAndStore(resource);
         SimpleVectorStore vectorStore = embeddingService.getVectorStore();
         List<Document> similarDocuments = vectorStore.similaritySearch("Contenido del tema sin ejemplos");
@@ -147,7 +148,7 @@ public class OllamaServiceImpl {
         promptParameters.put("context", context.toString());
 
         String templateString;
-        try (InputStream inputStream = promptQuestionnaireQuestionsFromFile.getInputStream();
+        try (InputStream inputStream = promptQuestionPoolQuestionsFromFile.getInputStream();
              BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream, StandardCharsets.UTF_8))) {
             StringBuilder stringBuilder = new StringBuilder();
             String line;
@@ -164,7 +165,7 @@ public class OllamaServiceImpl {
         ChatResponse response = chatModelForText.call(prompt);
         String answer = response.getResult().getOutput().getText();
         System.out.println("Preguntas:\n" + answer);
-        return getQuestionnaireFromText(answer);
+        return getQuestionPoolFromText(answer);
     }
 
     /**

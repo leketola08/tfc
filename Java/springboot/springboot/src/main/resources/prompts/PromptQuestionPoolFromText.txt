@@ -1,0 +1,37 @@
+Dado el siguiente banco de preguntas:
+
+{questionPool}
+
+Pasa cada una de las preguntas a este formato de estructura JSON:
+
+{structure}
+
+Sigue estas reglas para la extracción:
+
+    title: Si hay un título claro, utilízalo. De lo contrario, usa por defecto 'Cuestionario-{datetoday}'.
+
+    description: Crea una descripción más larga que el título y que proporcione más contexto sobre el cuestionario de forma muy general sin detalles.
+
+    questions: Para cada pregunta encontrada en la extracción:
+
+        text: Extrae solo el texto de la pregunta.
+
+        type: Determina el tipo de la pregunta según el formato de la pregunta y las respuestas:
+
+            "MO" para preguntas de opción múltiple con solamente una respuesta correcta
+
+            "BOOL" para preguntas de verdadero/falso o sí/no.
+
+            "LA" para preguntas abiertas de respuesta larga.
+
+            "SA" para preguntas abiertas de respuesta corta.
+
+        answers: Extrae todas las opciones de respuesta, eliminando cualquier marcador de orden (por ejemplo, "a)", "1.").
+        Las preguntas abiertas solamente tienen una única respuesta.
+
+        correctAnswer: Identifica y extrae la respuesta correcta. Para "MO", "OR" y "BOOL", si no se marca
+        explícitamente una respuesta correcta, podrías necesitar inferirla o establecerla como nula.
+        Para respuestas abiertas no se indicará la pregunta correcta
+    creationDate: Usa la fecha actual: {datetoday}.
+
+Asegúrate de que la salida sea una cadena JSON válida.

@@ -25,6 +25,10 @@ public class Questionnaire {
     private List<Question> questions;
     private String creationDate;
 
+    private boolean sectioned;
+
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private List<String> sections;
+
+    private ObjectId questionPoolId;
 }

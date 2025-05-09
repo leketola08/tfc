@@ -1,9 +1,9 @@
 package org.corella.springboot.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.corella.springboot.model.Questionnaire;
-import org.corella.springboot.services.QuestionnaireService;
-import org.corella.springboot.servicesImplementation.OllamaServiceImpl;
+import org.corella.springboot.model.QuestionPool;
+import org.corella.springboot.services.OllamaService;
+import org.corella.springboot.services.QuestionPoolService;
 import org.springframework.ai.chat.client.ChatClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ByteArrayResource;
@@ -23,33 +23,33 @@ public class AIController {
     private final ChatClient chatClient;
 
     @Autowired
-    OllamaServiceImpl ollamaService;
+    OllamaService ollamaService;
 
     @Autowired
-    QuestionnaireService questionnaireService;
+    QuestionPoolService questionPoolService;
 
     public AIController(ChatClient.Builder chatClient) {
         this.chatClient = chatClient.build();
     }
 
-    @GetMapping("/ai/questionnaireText")
+    @GetMapping("/ai/questionpooltext")
     public String questionnaireText(Model model) {
-        return "formQuestionnaireAI";
+        return "formQuestionPoolAI";
     }
 
-    @RequestMapping("/ai/questionnaireText/load")
-    public String questionnaireTextLoad(@RequestParam String prompt) {
-        System.out.println(ollamaService.getQuestionnaireFromText(prompt));
+    @RequestMapping("/ai/questionpooltext/load")
+    public String questionPoolTextLoad(@RequestParam String prompt) {
+        System.out.println(ollamaService.getQuestionPoolFromText(prompt));
         return "redirect:/";
     }
 
-    @GetMapping("/pdf")
+    @GetMapping("/ai/pdf")
     public String pdfToText() {
         return "pdfToText";
     }
 
-    @PostMapping("/pdf")
-    public String uploadPDF(@RequestParam("file")MultipartFile file, Model model) {
+    @PostMapping("/ai/pdf")
+    public String uploadPDF(@RequestParam("file")MultipartFile file, @RequestParam("questionCount") Integer numQuestion, Model model) {
         if (file.isEmpty()) {
             model.addAttribute("message", "Archivo no subido");
             return "error";
@@ -63,13 +63,13 @@ public class AIController {
         try {
             ByteArrayResource resource = new ByteArrayResource(file.getBytes());
 
-            String questionnaireJSON = ollamaService.getQuestionnaireQuestionsFromText(resource, 10);
+            String questionnaireJSON = ollamaService.getQuestionPoolFromResource(resource, numQuestion);
             ObjectMapper objectMapper = new ObjectMapper();
             System.out.println(questionnaireJSON);
-            Questionnaire questionnaire = objectMapper.readValue(questionnaireJSON, Questionnaire.class);
-            Questionnaire insertedQuestionnaire = questionnaireService.saveQuestionnaire(questionnaire);
-            if (!insertedQuestionnaire.toString().isEmpty())
-                return "redirect:/questionnaires/" + insertedQuestionnaire.getId().toString();
+            QuestionPool questionPool = objectMapper.readValue(questionnaireJSON, QuestionPool.class);
+            QuestionPool insertedQuestionPool = questionPoolService.saveQuestionPool(questionPool);
+            if (!insertedQuestionPool.toString().isEmpty())
+                return "redirect:/questionnaires/" + insertedQuestionPool.getId().toString();
             model.addAttribute("message", "Ocurrió un error al procesar el archivo");
             return "error";
         } catch (IOException e) {

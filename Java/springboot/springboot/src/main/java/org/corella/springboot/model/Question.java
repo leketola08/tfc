@@ -44,6 +44,6 @@ public class Question {
 
     @JsonGetter("correctAnswer")
     public String getCorrectAnswer() {
-        return (type  == QuestionType.MULTIPLEOPTION || type == QuestionType.BOOLEAN || type == QuestionType.ORDER) ? correctAnswer : null; // Si tiene opciones a elegir devuelve la correcta
+        return (type  == QuestionType.MULTIPLEOPTION || type == QuestionType.BOOLEAN) ? correctAnswer : null; // Si tiene opciones a elegir devuelve la correcta
     }
 }
