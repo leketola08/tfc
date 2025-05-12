@@ -1,10 +1,10 @@
 package org.corella.springboot.services;
 
+import org.corella.springboot.model.QuestionPool;
 import org.springframework.core.io.Resource;
 
 public interface OllamaService {
-    String getQuestionPoolFromText(String questionPool);
+    QuestionPool getQuestionPoolFromText(String questionPool);
     String getQuestionPoolFromText(Resource resource, int questionNum);
-    String getQuestionPoolFromResource(Resource resource, int questionNum);
-    String getOllamaResponseQuestionQuestion(String question);
+    QuestionPool getQuestionPoolFromResource(Resource resource, int questionNum);
 }

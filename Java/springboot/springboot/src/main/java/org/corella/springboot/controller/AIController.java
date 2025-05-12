@@ -63,13 +63,10 @@ public class AIController {
         try {
             ByteArrayResource resource = new ByteArrayResource(file.getBytes());
 
-            String questionnaireJSON = ollamaService.getQuestionPoolFromResource(resource, numQuestion);
-            ObjectMapper objectMapper = new ObjectMapper();
-            System.out.println(questionnaireJSON);
-            QuestionPool questionPool = objectMapper.readValue(questionnaireJSON, QuestionPool.class);
+            QuestionPool questionPool = ollamaService.getQuestionPoolFromResource(resource, numQuestion);
             QuestionPool insertedQuestionPool = questionPoolService.saveQuestionPool(questionPool);
             if (!insertedQuestionPool.toString().isEmpty())
-                return "redirect:/questionnaires/" + insertedQuestionPool.getId().toString();
+                return "redirect:/questionpool/" + insertedQuestionPool.getId().toString();
             model.addAttribute("message", "Ocurrió un error al procesar el archivo");
             return "error";
         } catch (IOException e) {

@@ -57,5 +57,21 @@ public class QuestionPoolController {
         return "redirect:/questionpool/list";
     }
 
-
+    @RequestMapping("questionpool/edit/{id}")
+    public String editQuestionnaire(Model model, @PathVariable String id) {
+        ObjectId poolId;
+        try {
+            poolId = new ObjectId(id);
+        } catch (IllegalArgumentException e) {
+            model.addAttribute("message", "ID inválido " + id);
+            return "error";
+        }
+        Optional<QuestionPool> questionPool = questionPoolService.findById(poolId);
+        questionPool.ifPresent(value -> model.addAttribute("questionPool", value));
+        model.addAttribute("questionTypes", Arrays.stream(QuestionType.values())
+                .map(q -> Map.of("code", q.getCode(), "description", q.getDescription()))
+                .toList());
+        model.addAttribute("newQuestionPool", false);
+        return "formNewQuestionPool";
+    }
 }

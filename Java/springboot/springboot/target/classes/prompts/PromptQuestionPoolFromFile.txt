@@ -1,29 +1,48 @@
-Dado el siguiente contexto:
+🧠 Dado el siguiente contexto:
 
 {context}
 
-Basándote en este contexto, genera {numquestions} preguntas para un cuestionario. Las preguntas deben estar en español y seguir la siguiente estructura JSON
- no añadas campos nuevos, solamente puedes dejar valor por defecto diciendo que no lo sabes:
+🎯 Objetivo:
+Genera exactamente {numquestions} preguntas en español para un cuestionario, siguiendo estrictamente la siguiente estructura JSON (no añadas campos nuevos):
 
 {structure}
 
-Crea un título para todo el cuestionario suele estará al principio del contexto, que si no es encontrado por defecto es 'Cuestionario-{datetimetoday}'.
-Una descripción que es más largo que el título que provee más contexto sobre el cuestionario, que si no es encontrado es el mismo que el título.
+📋 Reglas para la generación:
 
-Sigue estas reglas para la generación de cada pregunta:
-- Texto de la pregunta: Formula una pregunta clara y concisa en español que se pueda responder basándose en el
-contexto proporcionado. No repitas la misma pregunta. Debes diferenciar que preguntas son de tipo ejemplo o teóricos. Si es un ejemplo el texto debe empezar por ej:
-- Tipo: Determina el tipo de pregunta más apropiado:
-    - "MO" para preguntas de opción múltiple con solamente una respuesta correcta
-    - "BOOL" para preguntas de verdadero/falso o si/no
-    - "LA" para preguntas abiertas largas
-    - "SA" para preguntas abiertas cortas
-     Determina el tipo según la información del contexto y cómo se podría responder la pregunta. Intenta variar los
-     tipos de preguntas.
-- Respuestas: Si el tipo de pregunta es "MO" o "OR" genera como mínimo 3 respuestas plausibles pero con preferencia a 4
-"BOOL" generada para respuestas de verdadero/falso solo tiene 2 opciones. Para "LA" y "SA", la lista de respuestas estará vacía.
-- Respuesta correcta: Para "MO", "OR", y "BOOL", identifica y proporciona la respuesta correcta basada en el
-contexto. Si la respuesta no es directamente obvia, indica la respuesta más probable o deja el campo como `null` si no
-se puede determinar con certeza. Las respuestas abiertas solo tienen una respuesta correcta o NULL
-Marca todo en MAYUSCULAS si no encuentras una respuesta clara
-Asegúrate de que la salida sea un JSON String válido.
+1. **Título**  
+   - Si el contexto tiene un título claro al principio, úsalo.  
+   - Si no, usa `"Cuestionario-{datetimetoday}"`.
+
+2. **Descripción**  
+   - Debe ser más larga que el título y explicar de forma general el tema.  
+   - Si no se puede inferir, usa el mismo texto que el título.
+
+3. **Texto de la pregunta**  
+   - Formula una pregunta clara y concisa.  
+   - No repitas preguntas similares.  
+   - Si es una pregunta basada en un **ejemplo**, el texto debe comenzar con `"Ej:"`.
+
+4. **Tipo** (`type`)  
+   Elige uno de los siguientes:
+   - `"MO"` → Opción múltiple con una sola respuesta correcta  
+   - `"BOOL"` → Pregunta de verdadero/falso  
+   - `"LA"` → Respuesta abierta larga  
+   - `"SA"` → Respuesta abierta corta  
+   - Determina el tipo según la naturaleza de la pregunta. Varía los tipos si es posible.
+
+5. **Respuestas** (`answers`)  
+   - Para `"MO"` y `"OR"`: genera al menos 3 opciones, idealmente 4.  
+   - Usa solo cadenas de texto. ❌ NO uses objetos (`{{"text": "..."}}`)
+   - `"BOOL"` debe contener exactamente `"Verdadero"` y `"Falso"`.  
+   - Para `"LA"` y `"SA"`: usa una lista vacía (`[]`).
+
+6. **Respuesta Correcta** (`correctAnswer`)  
+   - Solo para tipos `"MO"`, `"OR"`, y `"BOOL"`  
+   - Si la respuesta es clara, escríbela **exactamente igual** a como aparece en `"answers"`.  
+   - Si no se puede determinar con certeza, pon `"null"` o una palabra en **MAYÚSCULAS** indicando la duda.  
+   - ❌ Para `"LA"` y `"SA"`: omite este campo o usa `"null"`.
+
+🛑 IMPORTANTE:
+- No agregues ningún campo que no esté definido en `{structure}`.  
+- Toda la salida debe ser una cadena JSON válida.  
+- ❌ No incluyas explicaciones, encabezados, ni formato adicional.

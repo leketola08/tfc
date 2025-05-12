@@ -2,36 +2,40 @@ Dado el siguiente banco de preguntas:
 
 {questionPool}
 
-Pasa cada una de las preguntas a este formato de estructura JSON:
+Convierte cada pregunta al siguiente formato de JSON ESTRICTO:
 
 {structure}
 
-Sigue estas reglas para la extracción:
+📝 Reglas estrictas para la extracción:
 
-    title: Si hay un título claro, utilízalo. De lo contrario, usa por defecto 'Cuestionario-{datetoday}'.
+- **title**: Usa un título claro si existe, si no, pon `"Cuestionario-{datetoday}"`.
 
-    description: Crea una descripción más larga que el título y que proporcione más contexto sobre el cuestionario de forma muy general sin detalles.
+- **description**: Escribe una descripción general (más larga que el título), sin repetir preguntas ni usar detalles específicos.
 
-    questions: Para cada pregunta encontrada en la extracción:
+- **questions**: Para cada pregunta:
 
-        text: Extrae solo el texto de la pregunta.
+  - **text**: Solo el texto de la pregunta.
 
-        type: Determina el tipo de la pregunta según el formato de la pregunta y las respuestas:
+  - **type**: Determina el tipo usando SOLO estos códigos:
+    - `"MO"` para opción múltiple con una sola respuesta correcta.
+    - `"BOOL"` para verdadero/falso o sí/no.
+    - `"LA"` para preguntas abiertas de respuesta larga.
+    - `"SA"` para preguntas abiertas de respuesta corta.
 
-            "MO" para preguntas de opción múltiple con solamente una respuesta correcta
+  - **answers**:
+    - Debe ser un **array de strings**.
+    - Elimina cualquier marcador como "a)", "1.", etc.
+    - NUNCA uses objetos. ❌ NO `{{"text": "..."}}` — ✅ SOLO `["Texto1", "Texto2"]`
+    - Para preguntas abiertas, se permite un solo texto genérico.
 
-            "BOOL" para preguntas de verdadero/falso o sí/no.
+  - **correctAnswer**:
+    - Solo incluir si el tipo es `MO`, `BOOL`.
+    - Si es tipo `LA` o `SA`, NO incluir `"correctAnswer"` en absoluto.
 
-            "LA" para preguntas abiertas de respuesta larga.
+- **creationDate**: Usa la fecha actual: `{datetoday}`.
 
-            "SA" para preguntas abiertas de respuesta corta.
+🛑 IMPORTANTE:
+- La salida debe ser solo una cadena JSON válida.
+- No incluyas explicaciones, encabezados, formato Markdown, ni comentarios.
 
-        answers: Extrae todas las opciones de respuesta, eliminando cualquier marcador de orden (por ejemplo, "a)", "1.").
-        Las preguntas abiertas solamente tienen una única respuesta.
-
-        correctAnswer: Identifica y extrae la respuesta correcta. Para "MO", "OR" y "BOOL", si no se marca
-        explícitamente una respuesta correcta, podrías necesitar inferirla o establecerla como nula.
-        Para respuestas abiertas no se indicará la pregunta correcta
-    creationDate: Usa la fecha actual: {datetoday}.
-
-Asegúrate de que la salida sea una cadena JSON válida.
+✅ Devuelve ÚNICAMENTE el JSON completo que sigue el formato.

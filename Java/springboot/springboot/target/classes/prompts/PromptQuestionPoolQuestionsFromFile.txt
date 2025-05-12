@@ -1,24 +1,36 @@
-Dado el siguiente contexto:
+🧠 Dado el siguiente contexto:
 
 {context}
 
-Basándote en este contexto, genera {numquestions} preguntas para un cuestionario.
+🎯 Objetivo:
+Genera exactamente {numquestions} preguntas para un cuestionario basadas en el contenido del contexto.
 
-Crea un título para todo el cuestionario suele estará al principio del contexto, que si no es encontrado por defecto es 'Cuestionario-{datetimetoday}'.
-Una descripción que es más largo que el título que provee más contexto sobre el cuestionario, que si no es encontrado es el mismo que el título.
+📌 También debes generar:
+- Un **título** general para el cuestionario (usualmente al principio del contexto). Si no lo encuentras, usa por defecto: `"Cuestionario-{datetimetoday}"`.
+- Una **descripción** más extensa que el título, explicando de forma general de qué trata el cuestionario. Si no se puede inferir, usa el título como descripción.
 
-Sigue estas reglas para la generación de cada pregunta:
-- Texto de la pregunta: Formula una pregunta clara y concisa en español que se pueda responder basándose en el
-contexto proporcionado sin utilizar ejemplos o tareas. No repitas la misma pregunta.
-- Tipo: Determina el tipo de pregunta más apropiado:
-    - Preguntas de opción múltiple sin un orden específico con solamente una respuesta correcta
-    - Preguntas de verdadero/falso o si/no
-    - Preguntas abiertas largas
-    - Preguntas abiertas cortas
-     Determina el tipo según la información del contexto y cómo se podría responder la pregunta. Intenta variar los
-     tipos de preguntas.
-- Respuestas: Par preguntas de opción mútiple sin orden genera 4 respuestas plausibles, respuestas de verdadero/falso solo tiene 2 opciones.
-Las preguntas abiertas no tienen respuesta
-- Respuesta correcta: Para preguntas de opción mútiple identifica y proporciona la respuesta correcta basada en el
-contexto. Si la respuesta no es directamente obvia, indica la respuesta más probable o deja el campo como `null` si no
-se puede determinar con certeza. Para preguntas abiertas no incluyas el campo
+📋 Reglas para cada pregunta generada:
+
+1. **Texto de la pregunta**
+   - Formula una pregunta clara y directa en español.
+   - Debe poder responderse usando solo el contexto (sin ejemplos, tareas o repeticiones).
+   - ❌ No repitas preguntas similares.
+
+2. **Tipo de pregunta** (elige el más adecuado según el contenido):
+   - `Opción Múltiple`: Una sola respuesta correcta entre 4 opciones.
+   - `Verdadero/Falso`: Dos opciones, una verdadera y una falsa.
+   - `Respuesta Abierta Corta`: Una frase breve o término.
+   - `Respuesta Abierta Larga`: Una explicación más desarrollada.
+
+3. **Respuestas:**
+   - ✅ Opción Múltiple: Crea entre 3 y 4 opciones plausibles (sin marcadores como "a)", "1.").
+   - ✅ Verdadero/Falso: Usa exactamente `"Verdadero"` y `"Falso"`.
+   - ❌ Preguntas abiertas: **no tienen respuestas** no incluirlo en absoluto.
+
+4. **Respuesta Correcta:**
+   - Solo para `Opción Múltiple` o `Verdadero/Falso` los otros tipos debe quedar como null.
+   - Debe ser **exactamente igual** a una de las respuestas generadas.
+   - Si no se puede determinar con certeza, deja `"correctAnswer": null`.
+   - ❌ Para preguntas abiertas: **no incluyas este campo** o déjalo como null.
+
+🛑 La salida debe ser solo texto en español. No expliques, no uses markdown, no agregues introducciones. Solo genera las preguntas y los campos requeridos.

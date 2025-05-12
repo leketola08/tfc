@@ -34,6 +34,28 @@
 
         <h3>Preguntas</h3>
         <div id="questionsContainer">
+            <div th:each="question, qStat : *{questions}" class="card p-3 mb-3">
+                <button type="button" class="btn btn-sm btn-outline-danger" style="padding: 0.15rem 0.5rem; line-height: 1;" onclick="this.closest('.card').remove()">×</button>
+
+                <input type="text" class="form-control mb-2" placeholder="Pregunta" th:field="*{questions[__${qStat.index}__].text}">
+
+                <select class="form-control mb-3" th:field="*{questions[__${qStat.index}__].type}"
+                        th:attr="onchange=|updateVisibility(this, ${qStat.index})|">
+                    <option th:each="qt : ${questionTypes}" th:value="${qt.code}" th:text="${qt.description}"
+                            th:selected="${qt.code} == ${question.type}"></option>
+                </select>
+
+                <div class="form-group" th:attr="id='answers-' + ${qStat.index}">
+                    <label>Respuestas</label>
+                    <div th:each="answer, aStat : *{questions[__${qStat.index}__].answers}" class="d-flex mb-2 gap-2 align-items-center">
+                        <input type="radio" th:field="*{questions[__${qStat.index}__].correctAnswer}" th:value="${answer}">
+                        <input type="text" class="form-control" th:field="*{questions[__${qStat.index}__].answers[__${aStat.index}__]}">
+                        <button type="button" class="btn btn-outline-danger btn-sm" onclick="this.closest('div').remove()">✕</button>
+                    </div>
+                </div>
+
+                <button type="button" class="btn btn-sm btn-outline-primary mt-2" th:attr="onclick=|addAnswer(${qStat.index})|">Añadir Respuesta</button>
+            </div>
         </div>
 
         <button type="button" class="btn btn-secondary" onclick="addQuestionField()">Añadir Pregunta</button>
@@ -115,6 +137,21 @@
 
         container.appendChild(div);
     }
+
+    function updateVisibility(select, index) {
+        const typeCode = select.value;
+        const allowsAnswers = ['MO', 'OR', 'BOOL'].includes(typeCode);
+        const wrapper = document.getElementById(`answers-${index}`);
+        if (wrapper) {
+            wrapper.parentElement.style.display = allowsAnswers ? 'block' : 'none';
+        }
+    }
+
+    window.addEventListener('DOMContentLoaded', () => {
+        document.querySelectorAll("select[name^='questions'][name$='.type']").forEach((select, idx) => {
+            updateVisibility(select, idx);
+        });
+    });
 </script>
 
 <script>

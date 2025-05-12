@@ -1,5 +1,7 @@
 package org.corella.springboot.servicesImplementation;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import org.corella.springboot.model.QuestionPool;
 import org.corella.springboot.services.EmbeddingService;
 import org.corella.springboot.services.OllamaService;
 import org.json.JSONArray;
@@ -69,7 +71,7 @@ public class OllamaServiceImpl implements OllamaService {
     @Value("classpath:/prompts/PromptQuestionPoolQuestionsFromFile.txt")
     private Resource promptQuestionPoolQuestionsFromFile;
 
-    public String getQuestionPoolFromText(String questionPool) {
+    public QuestionPool getQuestionPoolFromText(String questionPool) {
         Map<String, Object> promptParameters = new HashMap<>();
         promptParameters.put("datetoday", LocalDate.now().toString());
         promptParameters.put("questionPool", questionPool);
@@ -93,7 +95,16 @@ public class OllamaServiceImpl implements OllamaService {
         Prompt prompt = promptTemplate.create(promptParameters);
         ChatResponse response = chatModel.call(prompt);
         String answer = response.getResult().getOutput().getText();
-        return answer;
+        System.out.println("RAW\n" + answer);
+        if (!answer.trim().startsWith("{") || !answer.trim().endsWith("}")) {
+            throw new RuntimeException("Ollama output is not valid JSON:\n" + answer);
+        }
+        ObjectMapper objectMapper = new ObjectMapper();
+        try {
+            return objectMapper.readValue(answer, QuestionPool.class);
+        } catch (IOException e) {
+            throw new RuntimeException("Failed to parse Ollama response into QuestionPool", e);
+        }
     }
 
 
@@ -132,7 +143,7 @@ public class OllamaServiceImpl implements OllamaService {
         return answer;
     }
 
-    public String getQuestionPoolFromResource(Resource resource, int questionNum) {
+    public QuestionPool getQuestionPoolFromResource(Resource resource, int questionNum) {
         embeddingService.embedAndStore(resource);
         SimpleVectorStore vectorStore = embeddingService.getVectorStore();
         List<Document> similarDocuments = vectorStore.similaritySearch("Contenido del tema sin ejemplos");
@@ -165,32 +176,8 @@ public class OllamaServiceImpl implements OllamaService {
         ChatResponse response = chatModelForText.call(prompt);
         String answer = response.getResult().getOutput().getText();
         System.out.println("Preguntas:\n" + answer);
+        System.out.println("Preguntas generadas");
         return getQuestionPoolFromText(answer);
-    }
-
-    /**
-     * Función de prueba para obtener una respuesta de Ollama para una única pregunta
-     * @param question
-     * @return respuesta en formato JSON de Ollama
-     */
-    public String getOllamaResponseQuestionQuestion(String question) {
-        String structure = "Give the output using this json structure {\"text\": \"Question Text\"," +
-                "\"type\": \"type\"," +
-                "\"answers\": " +
-                "[\"Answer1\", \"Answer2\", \"Answer3\"]," +
-                "\"correctAnswer\": \"CorrectAnswer)\"}";
-        String promptString = structure + "Given a question extract theses properies: In text get only the question, answers have their own property specified later" +
-                "In types, multiple option is MO, a boolean is BOOL, Open long answer is LA, Open short answer is SA," +
-                " and ordered is OR. Types MO, BOOL AND OR Have a correct answer, if not specified leave it blank, on " +
-                "other types remove the property entirely. Each answer can be marked with a letter or like a number like" +
-                " a), a., 1), or 1. Just extract the answer text do no include the order marker, Put all answers into the" +
-                " answers array The correct answer is marked with -> a) for example. You must put the entire answer " +
-                "without including the order marker. Each corresponds to array answers" +
-                " And here is the question: " + question;
-        Prompt prompt = new Prompt(List.of(new UserMessage(promptString)));
-        ChatResponse response = chatModel.call(prompt);
-        String answer = response.getResult().getOutput().getText();
-        return answer;
     }
 
     private JSONObject jsonStructure() {
