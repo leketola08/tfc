@@ -30,7 +30,7 @@ public class EmbeddingServiceImpl implements EmbeddingService {
     @Autowired
     public EmbeddingServiceImpl(@Qualifier("ollamaEmbeddingModel") EmbeddingModel embeddingModel) {
         this.embeddingModel = embeddingModel;
-        this.vectorStore = SimpleVectorStore.builder(embeddingModel).build();
+        this.vectorStore = SimpleVectorStore.builder(this.embeddingModel).build();
     }
 
     @Override

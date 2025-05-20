@@ -1,36 +1,36 @@
-🧠 Dado el siguiente contexto:
+Dado el siguiente contexto:
 
 {context}
 
-🎯 Objetivo:
+Objetivo:
 Genera exactamente {numquestions} preguntas para un cuestionario basadas en el contenido del contexto.
 
-📌 También debes generar:
+También debes generar:
 - Un **título** general para el cuestionario (usualmente al principio del contexto). Si no lo encuentras, usa por defecto: `"Cuestionario-{datetimetoday}"`.
 - Una **descripción** más extensa que el título, explicando de forma general de qué trata el cuestionario. Si no se puede inferir, usa el título como descripción.
 
-📋 Reglas para cada pregunta generada:
+Reglas para cada pregunta generada:
 
 1. **Texto de la pregunta**
    - Formula una pregunta clara y directa en español.
    - Debe poder responderse usando solo el contexto (sin ejemplos, tareas o repeticiones).
-   - ❌ No repitas preguntas similares.
+   - No repitas preguntas similares.
 
 2. **Tipo de pregunta** (elige el más adecuado según el contenido):
-   - `Opción Múltiple`: Una sola respuesta correcta entre 4 opciones.
-   - `Verdadero/Falso`: Dos opciones, una verdadera y una falsa.
+   - `Opción Múltiple`: Una sola respuesta correcta entre 3 o 4 opciones.
+   - `Verdadero/Falso`: Dos opciones: `"Verdadero"` y `"Falso"` Estás preguntas debe tener un sentido booleano.
    - `Respuesta Abierta Corta`: Una frase breve o término.
    - `Respuesta Abierta Larga`: Una explicación más desarrollada.
 
 3. **Respuestas:**
-   - ✅ Opción Múltiple: Crea entre 3 y 4 opciones plausibles (sin marcadores como "a)", "1.").
-   - ✅ Verdadero/Falso: Usa exactamente `"Verdadero"` y `"Falso"`.
-   - ❌ Preguntas abiertas: **no tienen respuestas** no incluirlo en absoluto.
+   - Opción Múltiple: Genera entre 3 y 4 opciones plausibles.
+   - Verdadero/Falso: Utiliza exactamente `"Verdadero"` y `"Falso"`.
+   - Preguntas abiertas: No incluyas este campo.
 
 4. **Respuesta Correcta:**
-   - Solo para `Opción Múltiple` o `Verdadero/Falso` los otros tipos debe quedar como null.
+   - Solo para `Opción Múltiple` o `Verdadero/Falso`.
    - Debe ser **exactamente igual** a una de las respuestas generadas.
-   - Si no se puede determinar con certeza, deja `"correctAnswer": null`.
-   - ❌ Para preguntas abiertas: **no incluyas este campo** o déjalo como null.
+   - Si no se puede determinar con certeza, deja este campo como `null`.
+   - Para preguntas abiertas: No incluyas este campo o déjalo como `null`.
 
-🛑 La salida debe ser solo texto en español. No expliques, no uses markdown, no agregues introducciones. Solo genera las preguntas y los campos requeridos.
+La salida debe ser solo texto en formato JSON. No expliques, no uses markdown, no agregues introducciones. Solo genera el JSON con el título, la descripción y la lista de preguntas con sus campos correspondientes.

@@ -1,13 +1,13 @@
-🧠 Dado el siguiente contexto:
+Dado el siguiente contexto:
 
 {context}
 
-🎯 Objetivo:
+Objetivo:
 Genera exactamente {numquestions} preguntas en español para un cuestionario, siguiendo estrictamente la siguiente estructura JSON (no añadas campos nuevos):
 
 {structure}
 
-📋 Reglas para la generación:
+Reglas para la generación:
 
 1. **Título**  
    - Si el contexto tiene un título claro al principio, úsalo.  
@@ -32,7 +32,7 @@ Genera exactamente {numquestions} preguntas en español para un cuestionario, si
 
 5. **Respuestas** (`answers`)  
    - Para `"MO"` y `"OR"`: genera al menos 3 opciones, idealmente 4.  
-   - Usa solo cadenas de texto. ❌ NO uses objetos (`{{"text": "..."}}`)
+   - Usa solo cadenas de texto. NO uses objetos (`{{"text": "..."}}`)
    - `"BOOL"` debe contener exactamente `"Verdadero"` y `"Falso"`.  
    - Para `"LA"` y `"SA"`: usa una lista vacía (`[]`).
 
@@ -40,9 +40,9 @@ Genera exactamente {numquestions} preguntas en español para un cuestionario, si
    - Solo para tipos `"MO"`, `"OR"`, y `"BOOL"`  
    - Si la respuesta es clara, escríbela **exactamente igual** a como aparece en `"answers"`.  
    - Si no se puede determinar con certeza, pon `"null"` o una palabra en **MAYÚSCULAS** indicando la duda.  
-   - ❌ Para `"LA"` y `"SA"`: omite este campo o usa `"null"`.
+   - Para `"LA"` y `"SA"`: omite este campo o usa `"null"`.
 
-🛑 IMPORTANTE:
+IMPORTANTE:
 - No agregues ningún campo que no esté definido en `{structure}`.  
 - Toda la salida debe ser una cadena JSON válida.  
-- ❌ No incluyas explicaciones, encabezados, ni formato adicional.
+- No incluyas explicaciones, encabezados, ni formato adicional.

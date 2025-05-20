@@ -25,7 +25,7 @@ Convierte cada pregunta al siguiente formato de JSON ESTRICTO:
   - **answers**:
     - Debe ser un **array de strings**.
     - Elimina cualquier marcador como "a)", "1.", etc.
-    - NUNCA uses objetos. ❌ NO `{{"text": "..."}}` — ✅ SOLO `["Texto1", "Texto2"]`
+    - NUNCA uses objetos. NO `{{"text": "..."}}` — SOLO `["Texto1", "Texto2"]`
     - Para preguntas abiertas, se permite un solo texto genérico.
 
   - **correctAnswer**:
@@ -34,8 +34,8 @@ Convierte cada pregunta al siguiente formato de JSON ESTRICTO:
 
 - **creationDate**: Usa la fecha actual: `{datetoday}`.
 
-🛑 IMPORTANTE:
+IMPORTANTE:
 - La salida debe ser solo una cadena JSON válida.
 - No incluyas explicaciones, encabezados, formato Markdown, ni comentarios.
 
-✅ Devuelve ÚNICAMENTE el JSON completo que sigue el formato.
+Devuelve ÚNICAMENTE el JSON completo que sigue el formato.

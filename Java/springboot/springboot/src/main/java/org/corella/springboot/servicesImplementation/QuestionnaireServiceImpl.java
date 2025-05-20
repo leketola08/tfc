@@ -41,7 +41,7 @@ public class QuestionnaireServiceImpl implements QuestionnaireService {
         questionnaire.setDescription("Cuestionario nº" + (questionPool.getQuestionnaires().size() + 1) + " " +questionPool.getDescription());
         questionnaire.setQuestionPoolId(questionPool.getId());
         questionnaire.setQuestions(new ArrayList<>(randomizedQuestions));
-        questionnaire.setSectioned(false);
+        // questionnaire.setSectioned(false);
         return questionnaire;
     }
 

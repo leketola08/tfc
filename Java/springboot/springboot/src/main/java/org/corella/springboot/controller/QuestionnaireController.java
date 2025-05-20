@@ -102,6 +102,7 @@ public class QuestionnaireController {
             model.addAttribute("message", "ID inválido " + id);
             return "error";
         }
+
         Optional<Questionnaire> questionnaireO = questionnaireService.findById(poolId);
         if (questionnaireO.isEmpty()) {
             model.addAttribute("message", "No se encontró el cuestionario");

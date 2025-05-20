@@ -21,7 +21,6 @@ public class QuestionPool {
     private String title;
     private String description;
 
-    @JsonInclude(JsonInclude.Include.NON_NULL)
     private List<Question> questions;
     private String creationDate;
 

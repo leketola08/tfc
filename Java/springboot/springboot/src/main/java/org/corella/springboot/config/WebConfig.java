@@ -1,5 +1,6 @@
 package org.corella.springboot.config;
 
+import org.corella.springboot.model.enums.QuestionTypeFormatter;
 import org.corella.springboot.model.enums.QuestionTypeReadConverter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
@@ -14,5 +15,6 @@ public class WebConfig implements WebMvcConfigurer {
     @Override
     public void addFormatters(FormatterRegistry registry) {
         registry.addConverter(questionTypeConverter);
+        registry.addFormatter(new QuestionTypeFormatter());
     }
 }

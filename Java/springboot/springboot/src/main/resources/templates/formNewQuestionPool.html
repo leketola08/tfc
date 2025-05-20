@@ -29,38 +29,76 @@
         </div>
         <div class="form-group">
             <label for="desc">Descripción</label>
-            <input type="text" class="form-control" id="desc" placeholder="Introduce descripción" th:field="*{description}">
+            <input type="text" class="form-control" id="desc" placeholder="Introduce descripción"
+                   th:field="*{description}">
         </div>
 
         <h3>Preguntas</h3>
         <div id="questionsContainer">
-            <div th:each="question, qStat : *{questions}" class="card p-3 mb-3">
-                <button type="button" class="btn btn-sm btn-outline-danger" style="padding: 0.15rem 0.5rem; line-height: 1;" onclick="this.closest('.card').remove()">×</button>
+            <div th:each="question, qStat : *{questions}" class="card p-3 pb-5 mb-3 position-relative">
+                <!--Variable, variable estado(metadata)-->
+                <input type="hidden"
+                       th:field="*{questions[__${qStat.index}__].id}"/>
+                <label>
+                    <input type="text" class="form-control mb-2" placeholder="Pregunta"
+                           th:field="*{questions[__${qStat.index}__].text}">
+                </label>
 
-                <input type="text" class="form-control mb-2" placeholder="Pregunta" th:field="*{questions[__${qStat.index}__].text}">
+                <label>
+                    <select class="form-control mb-3"
+                            th:field="*{questions[__${qStat.index}__].type}"
+                            th:attr="onchange=|updateVisibility(this, ${qStat.index})|">
+                        <option th:each="qt : ${questionTypes}"
+                                th:value="${qt.code}"
+                                th:text="${qt.description}">
+                        </option>
+                    </select>
+                </label>
 
-                <select class="form-control mb-3" th:field="*{questions[__${qStat.index}__].type}"
-                        th:attr="onchange=|updateVisibility(this, ${qStat.index})|">
-                    <option th:each="qt : ${questionTypes}" th:value="${qt.code}" th:text="${qt.description}"
-                            th:selected="${qt.code} == ${question.type}"></option>
-                </select>
 
-                <div class="form-group" th:attr="id='answers-' + ${qStat.index}">
-                    <label>Respuestas</label>
-                    <div th:each="answer, aStat : *{questions[__${qStat.index}__].answers}" class="d-flex mb-2 gap-2 align-items-center">
-                        <input type="radio" th:field="*{questions[__${qStat.index}__].correctAnswer}" th:value="${answer}">
-                        <input type="text" class="form-control" th:field="*{questions[__${qStat.index}__].answers[__${aStat.index}__]}">
-                        <button type="button" class="btn btn-outline-danger btn-sm" onclick="this.closest('div').remove()">✕</button>
+                <div th:attr="id='answers-wrapper-' + ${qStat.index}">
+                    <div class="form-group" th:attr="id='answers-' + ${qStat.index}">
+                        <label>Respuestas</label>
+                        <div th:each="answer, aStat : *{questions[__${qStat.index}__].answers}"
+                             class="d-flex mb-2 gap-2 align-items-center">
+                            <label>
+                                <input type="radio"
+                                       th:field="*{questions[__${qStat.index}__].correctAnswer}"
+                                       th:value="${answer}">
+                            </label>
+                            <label>
+                                <input type="text"
+                                       class="form-control"
+                                       th:field="*{questions[__${qStat.index}__].answers[__${aStat.index}__]}">
+                            </label>
+
+                        </div>
+
                     </div>
-                </div>
 
-                <button type="button" class="btn btn-sm btn-outline-primary mt-2" th:attr="onclick=|addAnswer(${qStat.index})|">Añadir Respuesta</button>
+                    <button type="button"
+                            class="btn btn-sm btn-outline-primary mt-2"
+                            th:attr="onclick=|addAnswer(${qStat.index})|">
+                        Añadir Respuesta
+                    </button>
+
+                </div>
+                <button
+                        type="button"
+                        class="btn btn-outline-danger fs-5 position-absolute bottom-0 end-0 mb-2 me-2 p-1 w-auto"
+                        aria-label="Cerrar"
+                        onclick="this.closest('.card').remove()"
+                >
+                    Quitar Pregunta
+                </button>
+
             </div>
         </div>
 
         <button type="button" class="btn btn-secondary" onclick="addQuestionField()">Añadir Pregunta</button>
 
-        <input class="btn btn-primary" style="margin-top: 10px" th:value="${newQuestionPool} ? 'Guardar' : 'Modificar'" type="submit">
+        <input class="btn btn-primary" style="margin-top: 10px" th:value="${newQuestionPool} ? 'Guardar' : 'Modificar'"
+               type="submit">
     </form>
 </div>
 
@@ -71,32 +109,6 @@
 
         const div = document.createElement("div");
         div.classList.add("card", "p-3", "mb-3");
-
-        const questionInput = document.createElement("input");
-        questionInput.type = "text";
-        questionInput.classList.add("form-control", "mb-2");
-        questionInput.placeholder = "Pregunta";
-        questionInput.name = `questions[${index}].text`;
-
-        const typeSelect = document.createElement("select");
-        typeSelect.classList.add("form-control", "mb-3");
-        typeSelect.name = `questions[${index}].type`;
-
-        QUESTION_TYPES.forEach((questionPool, idx) => {
-            const option = document.createElement("option");
-            option.value = questionPool.code;
-            option.textContent = questionPool.description;
-            if (idx === 0) option.selected = true;
-            typeSelect.appendChild(option);
-        });
-
-        const removeButton = document.createElement("button");
-        removeButton.type = "button";
-        removeButton.classList.add("btn", "btn-sm", "btn-outline-danger");
-        removeButton.textContent = "×";
-        removeButton.style.padding = "0.15rem 0.5rem";
-        removeButton.style.lineHeight = "1";
-        removeButton.onclick = () => div.remove();
 
         const answerGroup = document.createElement("div");
         answerGroup.classList.add("form-group");
@@ -114,23 +126,23 @@
         addAnswerButton.type = "button";
         addAnswerButton.classList.add("btn", "btn-sm", "btn-outline-primary", "mt-2");
         addAnswerButton.textContent = "Añadir Respuesta";
-        addAnswerButton.setAttribute("onclick", `addAnswer(${index})`); //Añadir boton respuesta
+        addAnswerButton.setAttribute("onclick", `addAnswer(${index})`);
 
         const answerWrapper = document.createElement("div");
+        answerWrapper.id = `answers-wrapper-${index}`;
+
         answerWrapper.appendChild(answerGroup);
         answerWrapper.appendChild(addAnswerButton);
-        div.appendChild(removeButton);
 
         const updateVisibility = () => {
             const typeCode = typeSelect.value;
-            const allowsAnswers = ['MO', 'OR', 'BOOL'].includes(typeCode);
+            const allowsAnswers = ['MO', 'BOOL'].includes(typeCode);
             answerWrapper.style.display = allowsAnswers ? 'block' : 'none';
         };
-
         typeSelect.addEventListener('change', updateVisibility);
-
         updateVisibility();
 
+        div.appendChild(removeButton);
         div.appendChild(questionInput);
         div.appendChild(typeSelect);
         div.appendChild(answerWrapper);
@@ -138,12 +150,14 @@
         container.appendChild(div);
     }
 
+
     function updateVisibility(select, index) {
         const typeCode = select.value;
-        const allowsAnswers = ['MO', 'OR', 'BOOL'].includes(typeCode);
-        const wrapper = document.getElementById(`answers-${index}`);
+        const allowsAnswers = ['MO', 'BOOL'].includes(typeCode);
+        const wrapper = document.getElementById(`answers-wrapper-${index}`);
+
         if (wrapper) {
-            wrapper.parentElement.style.display = allowsAnswers ? 'block' : 'none';
+            wrapper.style.display = allowsAnswers ? 'block' : 'none';
         }
     }
 
@@ -185,7 +199,7 @@
         div.appendChild(input);
         div.appendChild(removeButton);
         container.appendChild(div);
-        container.scrollIntoView({ behavior: "smooth", block: "center" });
+        container.scrollIntoView({behavior: "smooth", block: "center"});
     }
 </script>
 
