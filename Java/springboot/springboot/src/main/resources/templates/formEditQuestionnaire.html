@@ -20,13 +20,31 @@
 </script>
 
 <div th:replace="~{fragments/navbar :: body}"></div>
-<h1 th:text="${newQuestionPool} ? 'Nuevo Banco de Preguntas' : 'Modificar Banco de Preguntas'"></h1>
+<h1>Modificar Cuestionario</h1>
 <div class="container">
-    <form method="post" th:action="@{/questionpool/save}" th:object="${questionPool}">
+    <form method="post" th:action="@{/questionnaire/save}" th:object="${questionnaire}">
+        <input type="hidden" name="poolIdStr" th:value="${questionnaire.getQuestionPoolId()}"/>
+        <input type="hidden" th:field="*{id}"/>
+        <input type="hidden" th:field="*{questionPoolId}"/>
+        <div class="btn-group mt-3" role="group">
+        <input class="btn btn-success" th:value="'Guardar y revisar'"
+               type="submit">
+            <a th:href="@{/questionnaire/export/{id}/{sol}(id=${questionnaire.id}, sol=${true})}"
+               class="btn btn-primary">
+                Exportar Cuestionario con soluciones
+            </a>
+            <a th:href="@{/questionnaire/export/{id}/{sol}(id=${questionnaire.id}, sol=${false})}"
+               class="btn btn-primary">
+                Exportar Cuestionario sin soluciones
+            </a>
+            <a th:href="@{/questionpool/{id}(id=${questionnaire.getQuestionPoolId().toString()})}"
+               class="btn btn-secondary">
+                Banco de preguntas original
+            </a>
+        </div>
         <div class="form-group">
             <label for="title">Título</label>
             <input type="text" class="form-control" id="title" placeholder="Introduce título" th:field="*{title}">
-            <input type="hidden" th:field="*{id}"/>
         </div>
         <div class="form-group">
             <label for="desc">Descripción</label>
@@ -61,22 +79,22 @@
                     <div class="form-group" th:attr="id='answers-' + ${qStat.index}">
                         <label>Respuestas</label>
                         <div th:each="answer, aStat : *{questions[__${qStat.index}__].answers}"
-                             class="d-flex mb-2 gap-2 align-items-center w-100">
+                             class="d-flex mb-2 gap-2 align-items-center">
 
                                 <input type="radio"
                                        th:field="*{questions[__${qStat.index}__].correctAnswer}"
                                        th:value="${answer}">
 
                                 <input type="text"
-                                       class="form-control w-100"
+                                       class="form-control flex-grow-1"
                                        th:field="*{questions[__${qStat.index}__].answers[__${aStat.index}__]}">
+
                             <button type="button"
                                     class="btn btn-outline-danger btn-sm"
                                     th:onclick="|this.closest('div').remove()|">
                                 X
                             </button>
                         </div>
-
 
                     </div>
 
@@ -101,7 +119,7 @@
 
         <button type="button" class="btn btn-secondary" onclick="addQuestionField()">Añadir Pregunta</button>
 
-        <input class="btn btn-primary" style="margin-top: 10px" th:value="${newQuestionPool} ? 'Guardar' : 'Modificar'"
+        <input class="btn btn-primary" style="margin-top: 10px" th:value="'Guardar y revisar'"
                type="submit">
     </form>
 </div>

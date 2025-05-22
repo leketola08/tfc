@@ -25,94 +25,94 @@
                             data-bs-target="#generateModal">
                         Generar Cuestionario
                     </button>
-                </div>
-                <div class="modal fade" id="generateModal" tabindex="-1" aria-labelledby="generateModalLabel"
-                     aria-hidden="true">
-                    <div class="modal-dialog">
-                        <div class="modal-content">
-                            <form th:action="@{/questionnaire/generate}" method="post">
-                                <div class="modal-header">
-                                    <h5 class="modal-title" id="generateModalLabel">Número de preguntas</h5>
-                                    <button type="button" class="btn-close" data-bs-dismiss="modal"
-                                            aria-label="Close"></button>
-                                </div>
-                                <div class="modal-body">
-                                    <p>Introduzca el número de preguntas que quiere que tenga el cuestionario</p>
-                                    <input type="hidden" name="poolId" th:value="${questionPool.id}"/>
-                                    <div class="mb-3">
-                                        <label for="questionCount" class="form-label">Número preguntas</label>
-                                        <input type="number" class="form-control" id="questionCount"
-                                               name="questionCount"
-                                               placeholder="Introduce un número" min="1" step="1" required>
+                    <div class="modal fade" id="generateModal" tabindex="-1" aria-labelledby="generateModalLabel"
+                         aria-hidden="true">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+                                <form th:action="@{/questionnaire/generate}" method="post">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title" id="generateModalLabel">Número de preguntas</h5>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                                aria-label="Close"></button>
                                     </div>
-                                </div>
-                                <div class="modal-footer">
-                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel
-                                    </button>
-                                    <button type="submit" class="btn btn-success">Submit</button>
-                                </div>
-                            </form>
+                                    <div class="modal-body">
+                                        <p>Introduzca el número de preguntas que quiere que tenga el cuestionario</p>
+                                        <input type="hidden" name="poolIdStr" th:value="${questionPool.id}"/>
+                                        <div class="mb-3">
+                                            <label for="questionCount" class="form-label">Número preguntas</label>
+                                            <input type="number" class="form-control" id="questionCount"
+                                                   name="questionCount"
+                                                   placeholder="Introduce un número" min="1" step="1" required>
+                                        </div>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel
+                                        </button>
+                                        <button type="submit" class="btn btn-success">Submit</button>
+                                    </div>
+                                </form>
+                            </div>
                         </div>
                     </div>
+                    <a class="btn btn-secondary" th:href="@{/questionnaires/{id} (id = ${questionPool.id})}">Cuestionarios
+                        generados</a>
+                    <a class="btn btn-info" th:href="@{/questionpool/edit/{id}(id=${questionPool.id})}">Editar</a>
+                    <a class="btn btn-danger" th:href="@{/questionpool/delete/{id}(id=${questionPool.id})}">Borrar</a>
                 </div>
-            </div>
-            <div class="text-start">
-                <a class="btn btn-info" th:href="@{/questionpool/edit/{id}(id=${questionPool.id})}">Editar</a>
-            </div>
-            <table class="table table-hover">
+                <table class="table table-hover">
 
-                <tbody>
-                <tr>
-                    <th class="text-secondary" scope="row">Título</th>
-                    <td class="fw-semibold" th:text="${questionPool.title}">Titulo</td>
-                    <th class="text-secondary" scope="row">Descripción</th>
-                    <td class="fw-semibold" th:text="${questionPool.description}">Descripcion</td>
-                </tr>
-                <tr>
-                    <th class="text-secondary" scope="row">Preguntas</th>
-                    <td colspan="3">
-                        <table class="table table-hover">
+                    <tbody>
+                    <tr>
+                        <th class="text-secondary" scope="row">Título</th>
+                        <td class="fw-semibold" th:text="${questionPool.title}">Titulo</td>
+                        <th class="text-secondary" scope="row">Descripción</th>
+                        <td class="fw-semibold" th:text="${questionPool.description}">Descripcion</td>
+                    </tr>
+                    <tr>
+                        <th class="text-secondary" scope="row">Preguntas</th>
+                        <td colspan="3">
+                            <table class="table table-hover">
 
-                            <thead>
-                            <tr>
-                                <th scope="col">Pregunta</th>
-                                <th scope="col">Tipo</th>
-                                <th scope="col">Respuestas</th>
-                                <th scope="col">Respuesta correcta</th>
-                            </tr>
-                            </thead>
-                            <tbody>
-                            <tr th:each="question : ${questionPool.questions}">
-                                <td th:text="${question.text}">Pregunta</td>
-                                <td th:text="${question.type}">Tipo</td>
-                                <td class="w-auto">
-                                    <table>
-                                        <tbody>
-                                        <tr th:each="answer : ${question.answers}">
-                                            <td th:text="${answer}">Respuesta</td>
-                                        </tr>
-                                        </tbody>
-                                    </table>
-                                </td>
-                                <td th:text="${question.getCorrectAnswer()}"></td>
-                            </tr>
-                            </tbody>
-                        </table>
-                    </td>
-                </tr>
-                </tbody>
-            </table>
+                                <thead>
+                                <tr>
+                                    <th scope="col">Pregunta</th>
+                                    <th scope="col">Tipo</th>
+                                    <th scope="col">Respuestas</th>
+                                    <th scope="col">Respuesta correcta</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr th:each="question : ${questionPool.questions}">
+                                    <td th:text="${question.text}">Pregunta</td>
+                                    <td th:text="${question.type}">Tipo</td>
+                                    <td class="w-auto">
+                                        <table>
+                                            <tbody>
+                                            <tr th:each="answer : ${question.answers}">
+                                                <td th:text="${answer}">Respuesta</td>
+                                            </tr>
+                                            </tbody>
+                                        </table>
+                                    </td>
+                                    <td th:text="${question.getCorrectAnswer()}"></td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
         </div>
     </div>
-</div>
-<script>
-    function openModal() {
-        document.getElementById('generateModal').style.display = 'block';
-    }
+    <script>
+        function openModal() {
+            document.getElementById('generateModal').style.display = 'block';
+        }
 
-    function closeModal() {
-        document.getElementById('generateModal').style.display = 'none';
-    }
-</script>
+        function closeModal() {
+            document.getElementById('generateModal').style.display = 'none';
+        }
+    </script>
 </body>
 </html>

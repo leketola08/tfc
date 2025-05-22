@@ -1,6 +1,5 @@
 package org.corella.springboot.controller;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.corella.springboot.model.QuestionPool;
 import org.corella.springboot.services.OllamaService;
 import org.corella.springboot.services.QuestionPoolService;
@@ -39,8 +38,11 @@ public class AIController {
 
     @RequestMapping("/ai/questionpooltext/load")
     public String questionPoolTextLoad(@RequestParam String prompt) {
-        System.out.println(ollamaService.getQuestionPoolFromText(prompt));
-        return "redirect:/";
+        QuestionPool questionPool = ollamaService.getQuestionPoolFromText(prompt);
+        QuestionPool insertedQuestionPool = questionPoolService.saveQuestionPool(questionPool);
+        if (!insertedQuestionPool.toString().isEmpty())
+            return "redirect:/questionpool/" + insertedQuestionPool.getId().toString();
+        return "redirect:/questionpool/list";
     }
 
     @GetMapping("/ai/pdf")
@@ -49,7 +51,7 @@ public class AIController {
     }
 
     @PostMapping("/ai/pdf")
-    public String uploadPDF(@RequestParam("file")MultipartFile file, @RequestParam("questionCount") Integer numQuestion, Model model) {
+    public String uploadPDF(@RequestParam("file") MultipartFile file, @RequestParam("questionCount") Integer numQuestion, Model model) {
         if (file.isEmpty()) {
             model.addAttribute("message", "Archivo no subido");
             return "error";

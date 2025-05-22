@@ -6,7 +6,6 @@ import com.itextpdf.kernel.font.PdfFontFactory;
 import com.itextpdf.kernel.pdf.PdfDocument;
 import com.itextpdf.kernel.pdf.PdfWriter;
 import com.itextpdf.layout.Document;
-import com.itextpdf.layout.borders.Border;
 import com.itextpdf.layout.borders.SolidBorder;
 import com.itextpdf.layout.element.AreaBreak;
 import com.itextpdf.layout.element.Cell;
@@ -29,7 +28,9 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @Controller
@@ -40,10 +41,36 @@ public class QuestionnaireController {
     @Autowired
     QuestionPoolService questionPoolService;
 
+    @GetMapping("/questionnaires")
+    public String questionnaireList(Model model) {
+        List<Questionnaire> questionnaires = questionnaireService.findAll();
+        model.addAttribute("questionnaires", questionnaires);
+        return "questionnaires";
+    }
+
+    @GetMapping("/questionnaires/{id}")
+    public String questionnaireListFromPool(Model model, @PathVariable String id) {
+        ObjectId poolId;
+        try {
+            poolId = new ObjectId(id);
+        } catch (IllegalArgumentException e) {
+            model.addAttribute("message", "ID inválido " + id);
+            return "error";
+        }
+        Optional<QuestionPool> questionPool = questionPoolService.findById(poolId);
+        if (questionPool.isEmpty()) {
+            model.addAttribute("message", "No se encontró el banco de preguntas");
+            return "error";
+        }
+        List<Questionnaire> questionnaires = questionPool.get().getQuestionnaires();
+        model.addAttribute("questionnaires", questionnaires);
+        return "questionnaires";
+    }
+
     @PostMapping("/questionnaire/generate")
-    public String generateQuestionnaire(@RequestParam("poolId") String poolIdStr,
+    public String generateQuestionnaire(@RequestParam("poolIdStr") String poolIdStr,
                                         @RequestParam("questionCount") int numQuestions,
-                                        Model model){
+                                        Model model) {
         ObjectId poolId;
         try {
             poolId = new ObjectId(poolIdStr);
@@ -60,25 +87,19 @@ public class QuestionnaireController {
         Questionnaire insertedQuestionnaire = questionnaireService.saveQuestionnaire(questionnaire, poolId);
         if (!insertedQuestionnaire.toString().isEmpty())
             return "redirect:/questionnaire/" + insertedQuestionnaire.getId().toString();
-        return "redirect:/questionpool/list";
+        return "redirect:/questionpools";
     }
 
     @PostMapping("/questionnaire/save")
-    public String saveQuestionnaire(@ModelAttribute Questionnaire questionnaire, @ModelAttribute String poolIdStr, Model model) {
-        ObjectId poolId;
-        try {
-            poolId = new ObjectId(poolIdStr);
-        } catch (IllegalArgumentException e) {
-            model.addAttribute("message", "ID inválido");
-            return "error";
-        }
+    public String saveQuestionnaire(@ModelAttribute Questionnaire questionnaire, Model model) {
+        ObjectId poolId = questionnaire.getQuestionPoolId();
         Questionnaire insertedQuestionnaire = questionnaireService.saveQuestionnaire(questionnaire, poolId);
         if (!insertedQuestionnaire.toString().isEmpty())
             return "redirect:/questionnaire/" + insertedQuestionnaire.getId().toString();
-        return "redirect:/questionpool/list";
+        return "redirect:/questionnaire/" + questionnaire.getId().toString();
     }
 
-    @GetMapping("/questionnaire/{id}")
+    @PostMapping("/questionnaire/{id}")
     public String questionnaireDetails(Model model, @PathVariable String id) {
         ObjectId poolId;
         try {
@@ -89,11 +110,31 @@ public class QuestionnaireController {
         }
         Optional<Questionnaire> questionnaire = questionnaireService.findById(poolId);
         questionnaire.ifPresent(value -> model.addAttribute("questionnaire", value));
-        return "questionnaireShow";
+        model.addAttribute("questionTypes", Arrays.stream(QuestionType.values())
+                .map(q -> Map.of("code", q.getCode(), "description", q.getDescription()))
+                .toList());
+        return "formEditQuestionnaire";
     }
 
-    @GetMapping("/questionnaire/export/{id}")
-    public String exportQuestionnaire(Model model, @PathVariable String id, HttpServletResponse response) {
+    @GetMapping("/questionnaire/{id}")
+    public String questionnaireDetail(Model model, @PathVariable String id) {
+        ObjectId poolId;
+        try {
+            poolId = new ObjectId(id);
+        } catch (IllegalArgumentException e) {
+            model.addAttribute("message", "ID inválido " + id);
+            return "error";
+        }
+        Optional<Questionnaire> questionnaire = questionnaireService.findById(poolId);
+        questionnaire.ifPresent(value -> model.addAttribute("questionnaire", value));
+        model.addAttribute("questionTypes", Arrays.stream(QuestionType.values())
+                .map(q -> Map.of("code", q.getCode(), "description", q.getDescription()))
+                .toList());
+        return "formEditQuestionnaire";
+    }
+
+    @GetMapping("/questionnaire/export/{id}/{sol}")
+    public String exportQuestionnaire(Model model, @PathVariable String id, HttpServletResponse response, @PathVariable boolean sol) {
         ObjectId poolId;
         System.out.println("Exportando");
         try {
@@ -111,10 +152,8 @@ public class QuestionnaireController {
         Questionnaire questionnaire = questionnaireO.get();
 
         response.setContentType("application/pdf");
-        response.setHeader("Content-Disposition", "attachment; filename=\"" +questionnaire.getTitle() +".pdf\"");
+        response.setHeader("Content-Disposition", "attachment; filename=\"" + questionnaire.getTitle() + ".pdf\"");
         try {
-
-
             PdfWriter writer = new PdfWriter(response.getOutputStream());
             PdfDocument pdf = new PdfDocument(writer);
             Document document = new Document(pdf);
@@ -128,7 +167,6 @@ public class QuestionnaireController {
             }
 
             document.add(new Paragraph("\nPreguntas:").setBold().setFontSize(14));
-
             List<Question> questions = questionnaire.getQuestions();
             int qNum = 1;
             for (Question q : questions) {
@@ -143,7 +181,7 @@ public class QuestionnaireController {
                 } else {
                     UnitValue height = UnitValue.createPointValue(0f);
                     if (q.getType() == QuestionType.SHORTANSWER) {
-                        height  = UnitValue.createPointValue(20f);
+                        height = UnitValue.createPointValue(20f);
                     } else if (q.getType() == QuestionType.LONGANSWER) {
                         height = UnitValue.createPointValue(200f);
                     } else {
@@ -165,25 +203,41 @@ public class QuestionnaireController {
                 document.add(new Paragraph("\n"));
                 qNum++;
             }
+            if (sol) {
+                document.add(new AreaBreak(AreaBreakType.NEXT_PAGE));
+                document.add(new Paragraph("Respuestas Correctas").setBold().setFontSize(14));
 
-            document.add(new AreaBreak(AreaBreakType.NEXT_PAGE));
-            document.add(new Paragraph("Respuestas Correctas").setBold().setFontSize(14));
+                int aNum = 1;
 
-            int aNum = 1;
-            for (Question q : questions) {
-                if (q.getCorrectAnswer() != null) {
-                    document.add(new Paragraph(aNum + ". " + q.getCorrectAnswer()));
-                } else {
-                    document.add(new Paragraph(aNum + ". [Abierta]"));
+
+                for (Question q : questions) {
+                    if (q.getCorrectAnswer() != null) {
+                        document.add(new Paragraph(aNum + ". " + q.getCorrectAnswer()));
+                    } else {
+                        document.add(new Paragraph(aNum + ". [Abierta]"));
+                    }
+                    aNum++;
                 }
-                aNum++;
             }
-
             document.close();
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
         return null;
+    }
+
+    @GetMapping("/questionnaire/delete/{id}")
+    public String deleteQuestionnaire(Model model, @PathVariable String id) {
+        ObjectId qId;
+        try {
+            qId = new ObjectId(id);
+        } catch (IllegalArgumentException e) {
+            model.addAttribute("message", "ID inválido");
+            return "error";
+        }
+        String result = questionnaireService.deleteQuestionnaire(qId);
+        System.out.println(result);
+        return "redirect:/questionnaires";
     }
 
 }

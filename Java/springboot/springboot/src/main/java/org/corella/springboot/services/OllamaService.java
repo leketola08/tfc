@@ -5,6 +5,8 @@ import org.springframework.core.io.Resource;
 
 public interface OllamaService {
     QuestionPool getQuestionPoolFromText(String questionPool);
+
     String getQuestionPoolFromText(Resource resource, int questionNum);
+
     QuestionPool getQuestionPoolFromResource(Resource resource, int questionNum);
 }

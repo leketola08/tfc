@@ -3,7 +3,7 @@ body {
     padding-top: 60px;
 }
 
-td,th {
+td, th {
     vertical-align: middle;
 }
 
@@ -14,7 +14,6 @@ nav .nav-title {
     padding: 10px 15px;
     transition: color 0.3s ease-in-out;
 }
-
 
 
 nav .nav-title:hover {

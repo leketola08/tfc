@@ -28,6 +28,7 @@
                             <th scope="col">Título</th>
                             <th scope="col">Descripción</th>
                             <th scope="col">Fecha de creación</th>
+                            <th scope="col">Borrar</th>
                         </tr>
                         </thead>
                         <tbody>
@@ -43,6 +44,9 @@
                             <td th:text="${questionPool.title}">Titulo</td>
                             <td th:text="${questionPool.description}">Descripcion</td>
                             <td th:text="${questionPool.creationDate}">FechaCreacion</td>
+                            <td>
+                                <a class="btn btn-danger" th:href="@{/questionpool/delete/{id}(id=${questionPool.id.toString()})}">X</a>
+                            </td>
                         </tr>
                         </tbody>
                     </table>

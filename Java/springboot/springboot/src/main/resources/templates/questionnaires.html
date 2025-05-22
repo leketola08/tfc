@@ -26,26 +26,24 @@
                         <tr>
                             <th scope="col">Ver</th>
                             <th scope="col">Título</th>
-                            <th scope="col">Descripción</th>
                             <th scope="col">Fecha de creación</th>
                             <th scope="col">Borrar</th>
                         </tr>
                         </thead>
                         <tbody>
-                        <tr th:each="questionPool : ${questionPoolList}">
+                        <tr th:each="questionnaire : ${questionnaires}">
                             <td>
                                 <a class="btn btn-outline-primary btn-sm d-flex align-items-center justify-content-center gap-1"
-                                   th:href="@{/questionpool/{id}(id=${questionPool.id})}"
+                                   th:href="@{/questionnaire/{id}(id=${questionnaire.id})}"
                                    style="width: 40px; height: 40px; border-radius: 8px; padding: 5px;">
                                     ID
                                     <i class="bi bi-eye"></i>
                                 </a>
                             </td>
-                            <td th:text="${questionPool.title}">Titulo</td>
-                            <td th:text="${questionPool.description}">Descripcion</td>
-                            <td th:text="${questionPool.creationDate}">FechaCreacion</td>
+                            <td th:text="${questionnaire.title}">Titulo</td>
+                            <td th:text="${questionnaire.creationDate}">FechaCreacion</td>
                             <td>
-                                <a class="btn btn-danger" th:href="@{/questionpool/delete/{id}(id=${questionPool.id.toString()})}">X</a>
+                                <a class="btn btn-danger" th:href="@{/questionnaire/delete/{id}(id=${questionnaire.id.toString()})}">X</a>
                             </td>
                         </tr>
                         </tbody>

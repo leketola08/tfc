@@ -26,6 +26,7 @@
         <div class="form-group">
             <label for="title">Título</label>
             <input type="text" class="form-control" id="title" placeholder="Introduce título" th:field="*{title}">
+            <input type="hidden" th:field="*{id}"/>
         </div>
         <div class="form-group">
             <label for="desc">Descripción</label>
@@ -60,19 +61,22 @@
                     <div class="form-group" th:attr="id='answers-' + ${qStat.index}">
                         <label>Respuestas</label>
                         <div th:each="answer, aStat : *{questions[__${qStat.index}__].answers}"
-                             class="d-flex mb-2 gap-2 align-items-center">
-                            <label>
+                             class="d-flex mb-2 gap-2 align-items-center w-100">
+
                                 <input type="radio"
                                        th:field="*{questions[__${qStat.index}__].correctAnswer}"
                                        th:value="${answer}">
-                            </label>
-                            <label>
-                                <input type="text"
-                                       class="form-control"
-                                       th:field="*{questions[__${qStat.index}__].answers[__${aStat.index}__]}">
-                            </label>
 
+                                <input type="text"
+                                       class="form-control w-100"
+                                       th:field="*{questions[__${qStat.index}__].answers[__${aStat.index}__]}">
+                            <button type="button"
+                                    class="btn btn-outline-danger btn-sm"
+                                    th:onclick="|this.closest('div').remove()|">
+                                X
+                            </button>
                         </div>
+
 
                     </div>
 
@@ -107,47 +111,70 @@
         const container = document.getElementById("questionsContainer");
         const index = container.children.length;
 
-        const div = document.createElement("div");
-        div.classList.add("card", "p-3", "mb-3");
+        const card = document.createElement("div");
+        card.classList.add("card", "p-3", "mb-3", "position-relative");
 
-        const answerGroup = document.createElement("div");
-        answerGroup.classList.add("form-group");
+        const textInput = document.createElement("input");
+        textInput.type = "text";
+        textInput.className = "form-control mb-2";
+        textInput.placeholder = "Pregunta";
+        textInput.name = `questions[${index}].text`;
 
-        const answerLabel = document.createElement("label");
-        answerLabel.textContent = "Respuestas";
+        // Question type select
+        const typeSelect = document.createElement("select");
+        typeSelect.className = "form-control mb-3";
+        typeSelect.name = `questions[${index}].type`;
 
-        const answerContainer = document.createElement("div");
-        answerContainer.id = `answers-${index}`;
+        QUESTION_TYPES.forEach(qt => {
+            const option = document.createElement("option");
+            option.value = qt.code;
+            option.textContent = qt.description;
+            typeSelect.appendChild(option);
+        });
 
-        answerGroup.appendChild(answerLabel);
-        answerGroup.appendChild(answerContainer);
+        // Answer container
+        const answersWrapper = document.createElement("div");
+        answersWrapper.id = `answers-wrapper-${index}`;
+        answersWrapper.style.display = "none";
 
-        const addAnswerButton = document.createElement("button");
-        addAnswerButton.type = "button";
-        addAnswerButton.classList.add("btn", "btn-sm", "btn-outline-primary", "mt-2");
-        addAnswerButton.textContent = "Añadir Respuesta";
-        addAnswerButton.setAttribute("onclick", `addAnswer(${index})`);
+        const answersGroup = document.createElement("div");
+        answersGroup.className = "form-group";
+        answersGroup.id = `answers-${index}`;
 
-        const answerWrapper = document.createElement("div");
-        answerWrapper.id = `answers-wrapper-${index}`;
+        const label = document.createElement("label");
+        label.textContent = "Respuestas";
+        answersGroup.appendChild(label);
+        answersWrapper.appendChild(answersGroup);
 
-        answerWrapper.appendChild(answerGroup);
-        answerWrapper.appendChild(addAnswerButton);
+        const addAnswerBtn = document.createElement("button");
+        addAnswerBtn.type = "button";
+        addAnswerBtn.className = "btn btn-sm btn-outline-primary mt-2";
+        addAnswerBtn.textContent = "Añadir Respuesta";
+        addAnswerBtn.setAttribute("onclick", `addAnswer(${index})`);
+        answersWrapper.appendChild(addAnswerBtn);
 
+        // Remove question button
+        const removeBtn = document.createElement("button");
+        removeBtn.type = "button";
+        removeBtn.className = "btn btn-outline-danger fs-5 position-absolute bottom-0 end-0 mb-2 me-2 p-1 w-auto";
+        removeBtn.textContent = "Quitar Pregunta";
+        removeBtn.onclick = () => card.remove();
+
+        // Type visibility toggle
         const updateVisibility = () => {
-            const typeCode = typeSelect.value;
-            const allowsAnswers = ['MO', 'BOOL'].includes(typeCode);
-            answerWrapper.style.display = allowsAnswers ? 'block' : 'none';
+            const code = typeSelect.value;
+            answersWrapper.style.display = ['MO', 'BOOL'].includes(code) ? 'block' : 'none';
         };
         typeSelect.addEventListener('change', updateVisibility);
         updateVisibility();
 
-        div.appendChild(removeButton);
-        div.appendChild(questionInput);
-        div.appendChild(typeSelect);
-        div.appendChild(answerWrapper);
+        // Build the full card
+        card.appendChild(textInput);
+        card.appendChild(typeSelect);
+        card.appendChild(answersWrapper);
+        card.appendChild(removeBtn);
 
-        container.appendChild(div);
+        container.appendChild(card);
     }
 
 

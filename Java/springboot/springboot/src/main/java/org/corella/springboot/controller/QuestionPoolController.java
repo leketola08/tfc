@@ -3,16 +3,17 @@ package org.corella.springboot.controller;
 import org.bson.types.ObjectId;
 import org.corella.springboot.model.Question;
 import org.corella.springboot.model.QuestionPool;
-import org.corella.springboot.model.Questionnaire;
 import org.corella.springboot.model.enums.QuestionType;
-import org.corella.springboot.services.QuestionService;
 import org.corella.springboot.services.QuestionPoolService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.*;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 
 
 @Controller
@@ -20,14 +21,11 @@ public class QuestionPoolController {
     @Autowired
     private QuestionPoolService questionPoolService;
 
-    @Autowired
-    private QuestionService questionService;
-
     @GetMapping("/questionpools")
     public String questionPoolList(Model model) {
         List<QuestionPool> questionPoolList = questionPoolService.findAll();
         model.addAttribute(questionPoolList);
-        return "questionPools";
+        return "questionpools";
     }
 
     @GetMapping("/questionpool/{id}")
@@ -41,7 +39,7 @@ public class QuestionPoolController {
     public String createQuestionnaire(Model model) {
         QuestionPool questionPool = new QuestionPool();
         questionPool.setQuestions(List.of(new Question()));
-        model.addAttribute(questionPool);
+        model.addAttribute("questionPool", questionPool);
         model.addAttribute("questionTypes", Arrays.stream(QuestionType.values())
                 .map(q -> Map.of("code", q.getCode(), "description", q.getDescription()))
                 .toList());
@@ -73,5 +71,18 @@ public class QuestionPoolController {
                 .toList());
         model.addAttribute("newQuestionPool", false);
         return "formNewQuestionPool";
+    }
+
+    @RequestMapping("questionpool/delete/{id}")
+    public String deleteQuestionnaire(Model model, @PathVariable String id) {
+        ObjectId poolId;
+        try {
+            poolId = new ObjectId(id);
+        } catch (IllegalArgumentException e) {
+            model.addAttribute("message", "ID inválido " + id);
+            return "error";
+        }
+        questionPoolService.deleteQuestionPool(poolId);
+        return "redirect:/questionpools";
     }
 }

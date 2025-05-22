@@ -62,6 +62,12 @@
                                     Exportar Cuestionario
                                 </a>
                             </tr>
+                            <tr>
+                                <a th:href="@{/questionpool/{id}(id=${questionnaire.getQuestionPoolId().toString()})}"
+                                   class="btn btn-secondary">
+                                    Banco de preguntas original
+                                </a>
+                            </tr>
                             </tbody>
                         </table>
                     </td>
