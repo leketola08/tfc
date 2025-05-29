@@ -138,7 +138,6 @@
         textInput.placeholder = "Pregunta";
         textInput.name = `questions[${index}].text`;
 
-        // Question type select
         const typeSelect = document.createElement("select");
         typeSelect.className = "form-control mb-3";
         typeSelect.name = `questions[${index}].type`;
@@ -150,7 +149,6 @@
             typeSelect.appendChild(option);
         });
 
-        // Answer container
         const answersWrapper = document.createElement("div");
         answersWrapper.id = `answers-wrapper-${index}`;
         answersWrapper.style.display = "none";
@@ -171,14 +169,12 @@
         addAnswerBtn.setAttribute("onclick", `addAnswer(${index})`);
         answersWrapper.appendChild(addAnswerBtn);
 
-        // Remove question button
         const removeBtn = document.createElement("button");
         removeBtn.type = "button";
         removeBtn.className = "btn btn-outline-danger fs-5 position-absolute bottom-0 end-0 mb-2 me-2 p-1 w-auto";
         removeBtn.textContent = "Quitar Pregunta";
         removeBtn.onclick = () => card.remove();
 
-        // Type visibility toggle
         const updateVisibility = () => {
             const code = typeSelect.value;
             answersWrapper.style.display = ['MO', 'BOOL'].includes(code) ? 'block' : 'none';
@@ -186,7 +182,6 @@
         typeSelect.addEventListener('change', updateVisibility);
         updateVisibility();
 
-        // Build the full card
         card.appendChild(textInput);
         card.appendChild(typeSelect);
         card.appendChild(answersWrapper);

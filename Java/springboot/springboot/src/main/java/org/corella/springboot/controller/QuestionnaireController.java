@@ -41,7 +41,7 @@ public class QuestionnaireController {
     @Autowired
     QuestionPoolService questionPoolService;
 
-    @GetMapping("/questionnaires")
+    @GetMapping("/questionnaires") // No utilizado
     public String questionnaireList(Model model) {
         List<Questionnaire> questionnaires = questionnaireService.findAll();
         model.addAttribute("questionnaires", questionnaires);
@@ -157,7 +157,7 @@ public class QuestionnaireController {
             PdfWriter writer = new PdfWriter(response.getOutputStream());
             PdfDocument pdf = new PdfDocument(writer);
             Document document = new Document(pdf);
-            PdfFont font = PdfFontFactory.createFont("src/main/resources/templates/fonts/times.ttf", PdfEncodings.IDENTITY_H, PdfFontFactory.EmbeddingStrategy.PREFER_EMBEDDED);
+            PdfFont font = PdfFontFactory.createFont("src/main/resources/templates/fonts/font.ttf", PdfEncodings.IDENTITY_H, PdfFontFactory.EmbeddingStrategy.PREFER_EMBEDDED);
             document.setFont(font);
 
             document.add(new Paragraph(questionnaire.getTitle())

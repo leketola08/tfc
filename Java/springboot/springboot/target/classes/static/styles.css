@@ -17,7 +17,11 @@ nav .nav-title {
 
 
 nav .nav-title:hover {
-    color: #E1C16E;
+    color: #ffffff;
+}
+
+nav .nav-link:hover, .dropdown-item:hover {
+    color: #D4AF37;
 }
 
 .init-section {

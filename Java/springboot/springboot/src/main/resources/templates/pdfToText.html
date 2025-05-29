@@ -13,17 +13,16 @@
 </head>
 <body>
 <div th:replace="~{fragments/navbar :: body}"></div>
-<div>Elige tu pdf</div>
 <form method="post" action="/ai/pdf" enctype="multipart/form-data">
-    <div>Elige tu PDF</div>
+    <h1 class="">Elige tu PDF</h1>
     <input type="file" name="file" accept="application/pdf" required/>
-
-    <div>¿Cuántas preguntas generar?</div>
+    <div>¿Cuántas preguntas quiere generar?</div>
     <label>
         <input type="number" name="questionCount" min="1" required/>
     </label>
-
-    <button type="submit">Subir PDF</button>
+    <div>
+        <button class="btn btn-success rounded-pill btn-lg px-4" type="submit">Subir PDF</button>
+    </div>
 </form>
 </body>
 </html>

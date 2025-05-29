@@ -23,11 +23,14 @@
 <h1 th:text="${newQuestionPool} ? 'Nuevo Banco de Preguntas' : 'Modificar Banco de Preguntas'"></h1>
 <div class="container">
     <form method="post" th:action="@{/questionpool/save}" th:object="${questionPool}">
+        <input class="btn btn-primary" style="margin-top: 10px" th:value="${newQuestionPool} ? 'Guardar' : 'Modificar'"
+               type="submit">
         <div class="form-group">
             <label for="title">Título</label>
             <input type="text" class="form-control" id="title" placeholder="Introduce título" th:field="*{title}">
 
             <input type="hidden" th:if="${!newQuestionPool}" th:field="*{id}"/>
+            <input type="hidden" th:if="${!newQuestionPool}" th:field="*{creationDate}"/>
         </div>
         <div class="form-group">
             <label for="desc">Descripción</label>

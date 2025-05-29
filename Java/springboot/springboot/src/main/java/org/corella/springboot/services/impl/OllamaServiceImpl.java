@@ -94,7 +94,7 @@ public class OllamaServiceImpl implements OllamaService {
         Prompt prompt = promptTemplate.create(promptParameters);
         ChatResponse response = chatModel.call(prompt);
         String answer = response.getResult().getOutput().getText();
-        System.out.println("RAW\n" + answer);
+        // System.out.println("RAW\n" + answer);
         if (!answer.trim().startsWith("{") || !answer.trim().endsWith("}")) {
             throw new RuntimeException("Ollama output is not valid JSON:\n" + answer);
         }

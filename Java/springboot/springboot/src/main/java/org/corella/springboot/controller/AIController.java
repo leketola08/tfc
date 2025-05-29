@@ -19,17 +19,11 @@ import java.io.IOException;
 @Controller
 public class AIController {
 
-    private final ChatClient chatClient;
-
     @Autowired
     OllamaService ollamaService;
 
     @Autowired
     QuestionPoolService questionPoolService;
-
-    public AIController(ChatClient.Builder chatClient) {
-        this.chatClient = chatClient.build();
-    }
 
     @GetMapping("/ai/questionpooltext")
     public String questionnaireText(Model model) {
@@ -78,6 +72,4 @@ public class AIController {
         }
 
     }
-
-
 }
