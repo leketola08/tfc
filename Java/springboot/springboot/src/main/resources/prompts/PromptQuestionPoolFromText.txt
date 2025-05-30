@@ -8,7 +8,7 @@ Convierte cada pregunta al siguiente formato de JSON ESTRICTO:
 
 📝 Reglas estrictas para la extracción:
 
-- **title**: Usa un título claro si existe, si no, pon `"Cuestionario-{datetoday}"`.
+- **title**: Usa un título claro si existe, si no existe, utiliza `"Cuestionario-{datetoday}"` pero solamente en el caso de que no exista.
 
 - **description**: Escribe una descripción general (más larga que el título), sin repetir preguntas ni usar detalles específicos.
 
@@ -26,6 +26,7 @@ Convierte cada pregunta al siguiente formato de JSON ESTRICTO:
     - Debe ser un **array de strings**.
     - Elimina cualquier marcador como "a)", "1.", etc.
     - NUNCA uses objetos. NO `{{"text": "..."}}` — SOLO `["Texto1", "Texto2"]`
+    - Las preguntas de tipo bool o verdadero/falso sus respuestas siempre serán "verdadero" y "falso"
     - Para preguntas abiertas, se permite un solo texto genérico.
 
   - **correctAnswer**:

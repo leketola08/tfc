@@ -15,11 +15,32 @@
 <div th:replace="~{fragments/navbar :: body}"></div>
 <div class="container">
     <form method="post" th:action="@{/ai/questionpooltext/load}">
-        <div class="form-group">
-            <label for="prompt">Pegue aquí su banco de preguntas</label>
-            <textarea name="prompt" class="form-control" id="prompt" rows="20"></textarea>
+        <div class="row">
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label for="prompt">Pegue aquí su banco de preguntas</label>
+                    <textarea name="prompt" class="form-control" id="prompt" rows="25"></textarea>
+                </div>
+                <input class="btn btn-primary" style="margin-top: 10px" value="Generar" type="submit">
+            </div>
+
+            <div class="col-md-6">
+                <p>Ejemplo:</p>
+                <p>Título: Preguntas de programación</p>
+                <p>Descripción: Preguntas para el examen de programación del tema 1</p>
+                <p>1. ¿Un if es un bucle?</p>
+                <p>a) Falso</p>
+                <p>b) Verdadero</p>
+                <p>2. ¿Cuál es el tipo de variable que corresponde a números enteros?</p>
+                <p>a) boolean</p>
+                <p>b) int</p>
+                <p>c) char</p>
+                <p>d) Object</p>
+                <p>Respuesta correctas:</p>
+                <p>1-a</p>
+                <p>2-b</p>
+            </div>
         </div>
-        <input class="btn btn-primary" style="margin-top: 10px" value="Generar" type="submit">
     </form>
 </div>
 </body>

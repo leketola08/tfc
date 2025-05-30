@@ -11,7 +11,7 @@ Reglas para la generación:
 
 1. **Título**  
    - Si el contexto tiene un título claro al principio, úsalo.  
-   - Si no, usa `"Cuestionario-{datetimetoday}"`.
+   - Si no, usa `"Cuestionario-{datetimetoday}"` pero solamente si no puedes encontrar uno.
 
 2. **Descripción**  
    - Debe ser más larga que el título y explicar de forma general el tema.  

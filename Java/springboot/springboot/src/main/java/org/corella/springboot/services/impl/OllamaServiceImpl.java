@@ -174,7 +174,7 @@ public class OllamaServiceImpl implements OllamaService {
         Prompt prompt = promptTemplate.create(promptParameters);
         ChatResponse response = chatModelForText.call(prompt);
         String answer = response.getResult().getOutput().getText();
-        System.out.println("Preguntas:\n" + answer);
+        // System.out.println("Preguntas:\n" + answer);
         System.out.println("Preguntas generadas");
         return getQuestionPoolFromText(answer);
     }

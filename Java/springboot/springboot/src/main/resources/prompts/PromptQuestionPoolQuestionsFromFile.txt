@@ -6,7 +6,7 @@ Objetivo:
 Genera exactamente {numquestions} preguntas para un cuestionario basadas en el contenido del contexto.
 
 También debes generar:
-- Un **título** general para el cuestionario (usualmente al principio del contexto). Si no lo encuentras, usa por defecto: `"Cuestionario-{datetimetoday}"`.
+- Un **título** general para el cuestionario (usualmente al principio del contexto). Si no lo encuentras, usa por defecto: `"Cuestionario-{datetimetoday}"` pero solamente si no lo encuentras.
 - Una **descripción** más extensa que el título, explicando de forma general de qué trata el cuestionario. Si no se puede inferir, usa el título como descripción.
 
 Reglas para cada pregunta generada:
@@ -33,4 +33,4 @@ Reglas para cada pregunta generada:
    - Si no se puede determinar con certeza, deja este campo como `null`.
    - Para preguntas abiertas: No incluyas este campo o déjalo como `null`.
 
-La salida debe ser solo texto en formato JSON. No expliques, no uses markdown, no agregues introducciones. Solo genera el JSON con el título, la descripción y la lista de preguntas con sus campos correspondientes.
+No expliques, no uses markdown, no agregues introducciones.
